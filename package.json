@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "dotenv": "^16.4.4",
-    "firebase-admin": "^12.0.0",
     "node-telegram-bot-api": "^0.64.0"
   },
   "name": "sysobot",
@@ -9,7 +8,7 @@
   "description": "bot telegram",
   "main": "index.js",
   "scripts": {
-    "peod": "node index.js",
+    "prod": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -7,22 +7,13 @@ const SHIFT2 = 2;
 const SHIFT3 = 3;
 const invalidCommand = "Mohon maaf command tidak tersedia! 🙏"
 
-const shiftTime = [[
-  {
-    text: "Shift 1",
-    callback_data: SHIFT1
-  },
-  {
-    text: "Shift 2",
-    callback_data: SHIFT2
-  }
-], [
-  {
-    text: "Shift 3",
-    callback_data: SHIFT3
-  }
-]];
+const shiftTime = `
+Masuk Shift apa ya ka kalau boleh tau??
 
+\/shift_1 : Masuk Shift 1
+\/shift_2 : Masuk Shift 2
+\/shift_3 : Masuk Shift 3
+`;
 const groupBCA = [
   [
     {
@@ -50,7 +41,6 @@ xxxxxx
 
 Terimakasih
 `
-
 const greetText= `
 Welcome to the SysoBot!
 How can I assist you?
@@ -88,21 +78,21 @@ const fullTeamC = `
 #WSA                                                                                                
 Hadir : RID (SL), BDW (TL), HRZ & ALM (Syso), KRM (TL DCMon), MSH & FPH (DCMon), Bagus(FM)
 Tidak Hadir :  -
-                                                                                                                
-#MBCA                                                                                                
-Hadir : VNT (SL), EMO (TL Syso), TCH & SCH (Syso), RBI (TL DCmon), MAB (DCMon), MUI (SOC)    
+
+#MBCA
+Hadir : VNT (SL), EMO (TL Syso), TCH & SCH (Syso), RBI (TL DCmon), MAB (DCMon), MUI (SOC)
 Tidak Hadir : -
-                  
-#GAS                                                                                                
-Hadir :  IPA (SL), JVR (TL syso), KRI & DVP (Syso), AWL (TL DCMon), MIW & LCW (DCMon), LAL (SOC)     
+
+#GAS
+Hadir :  IPA (SL), JVR (TL syso), KRI & DVP (Syso), AWL (TL DCMon), MIW & LCW (DCMon), LAL (SOC)
 Tidak Hadir :  - 
-       
-#GAC                                                                                                
-Hadir : JFR (SOC), Baharuddin & MAO (PMX/FOC)    
+
+#GAC
+Hadir : JFR (SOC), Baharuddin & MAO (PMX/FOC)
 Tidak Hadir : -
-             
-----------------------------------------------------------------------------------                            
-Terima kasih,        
+
+----------------------------------------------------------------------------------
+Terima kasih,
 Grup C
 `
 const fullTeamB = `
@@ -124,7 +114,6 @@ Tidak Hadir : -
  
 Terima kasih
 `
-
 const fullTeamD = `
 *WSA2                                                                                                       
 Hadir: HAN (SL), RIF (TL-SysO), DND & BMP (SysO), IVM (TL-DCMon), RKS & FKR (DCMon), AGE (SOC) 

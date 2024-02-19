@@ -1,8 +1,8 @@
 const TelegramBot = require('node-telegram-bot-api');
 const commands = require("../config/cmd.js")
-const {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD} = require("../config/constant.js")
-const today = new Date().toDateString();
-
+const {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD} = require("../config/constant.js");
+const {checkTime} = require("../utils/utility.js")
+const today = checkTime()
 class SysoBot extends TelegramBot {
     constructor(token, options) {
         super(token, options);
@@ -36,9 +36,8 @@ class SysoBot extends TelegramBot {
         this.onText(commands.start, (data) => {
           this.sendMessage(data.chat.id, greetText);
         });
-      }
-      
-      getQuotes() {
+    }
+    getQuotes() {
         this.onText(commands.quote, async (data) => {
           const quoteEndpoint = "https://api.kanye.rest/";
           try {
@@ -52,84 +51,205 @@ class SysoBot extends TelegramBot {
             this.sendMessage(data.from.id, "maaf silahkan ulangi lagi 🙏");
           }
         });
-      }
+    }
 
-      getHelp() {
+    getHelp() {
         this.onText(commands.help, (data) => {
           this.sendMessage(data.from.id, panduanText);
         });
-      }
+    }
 
-      getGenerate() {
-        this.onText(commands.generate, (data) => {
-            this.sendMessage(data.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
-                reply_markup: {
-                    inline_keyboard: groupBCA
-                }
-            })
+    async generate (id, grup) {
+        this.sendMessage(id, shiftTime)
+        await this.onText(commands.shiftOne, data => {
+            this.sendMessage(data.from.id, hadirText)
+            this.generateKomposisi(data.from.id,grup,1)
         })
+        await this.onText(commands.shiftTwo, data => {
+            this.sendMessage(data.from.id, hadirText)
+            this.generateKomposisi(data.from.id,grup,2)
+        })
+        await this.onText(commands.shiftThree, data => {
+            this.sendMessage(data.from.id, hadirText)
+            this.generateKomposisi(data.from.id,grup,3)
+        })
+        
+        // this.on("message", async data => {
+        //     const shift = data.text;
+        //     switch (shift) {
+        //         case "/shift_1":
+        //             await this.sendMessage(id, hadirText)
+        //             await this.generateKomposisi(id,grup,1)
+        //             break;
+        //         case "/shift_2":
+        //             await this.sendMessage(id, hadirText)
+        //             await this.generateKomposisi(id,grup,2)
+        //             break;
+        //         case "/shift_3":
+        //             await this.sendMessage(id, hadirText)
+        //             await this.generateKomposisi(id,grup,3)
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // })
+    }
 
-        this.on("callback_query", callback => {
-            const callbackNameGroup = callback.data
-            const id = callback.from.id
-            switch (callbackNameGroup){
-                case "A":
-                    generateKomposisi(id, callbackNameGroup)
+    async generateKomposisi (id,grup,shift) {
+        await this.onText(commands.fullTeam, data => {
+            switch (grup) {
+                case 'A':
+                    this.sendMessage(data.from.id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
                     break
-                case "B":
-                    generateKomposisi(id, callbackNameGroup)
+                case 'B':
+                    this.sendMessage(data.from.id, `Dear All, \n\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${checkTime()} :${fullTeamB}`) 
                     break
-                case "C":
-                    generateKomposisi(id, callbackNameGroup)
+                case  'C':
+                    this.sendMessage(data.from.id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${shift} pada ${checkTime()} :${fullTeamC}`)
                     break
-                case "D":
-                    generateKomposisi(id, callbackNameGroup)
+                case 'D':
+                    this.sendMessage(data.from.id, `${today}\n Shift ${shift} #Grup${grup} :${fullTeamD}`)
+                    break
+                default:
+                    this.sendMessage(data.from.id, "System Error")
                     break
             }
         })
+        await this.onText(commands.halfTeam, data => {
+            switch (grup) {
+                case 'A':
+                    this.sendMessage(id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
+                    break
+                case 'B':
+                    this.sendMessage(id, `Dear All, \n\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${checkTime()} :${fullTeamB}`) 
+                    break
+                case  'C':
+                    this.sendMessage(id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${shift} pada ${checkTime()} :${fullTeamC}`)
+                    break
+                case 'D':
+                    this.sendMessage(id, `${today}\n Shift ${shift} #Grup${grup} :${fullTeamD}`)
+                    break
+                default:
+                    this.sendMessage(id, "System Error")
+                    break
+            }
+        })
+    }
 
-        const generateKomposisi = (id, grup) => {
-            this.sendMessage(id, "Shift Berapa ka ??", {
-                reply_markup: {
-                    inline_keyboard: shiftTime
-                }
+    getGenerate(){
+        try {
+            this.onText(commands.generate, async (callback) => {
+                //console.log(callback)
+                await this.sendMessage(callback.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
+                    reply_markup: {
+                        inline_keyboard: groupBCA
+                    }
+                }).then(this.on("callback_query", async (dataGrup)=> {
+                    const grup  = dataGrup.data
+                    const chatId = dataGrup.from.id
+                    switch (dataGrup.data) {
+                        case 'A':
+                            await this.generate(chatId, grup)
+                            break;
+                        case 'B':
+                            await this.generate(chatId, grup)
+                            break;
+                        case 'C':
+                            await this.generate(chatId, grup)
+                            break;
+                        case 'D':
+                            await this.generate(chatId, grup)
+                            break;
+                        default:
+                            break;
+                    }
+                }))
             })
-    
-            this.on("callback_query", callbacks => {
-                const datas = callbacks.data;
-                this.sendMessage(id, hadirText).then(() => {
-                    this.onText(commands.fullTeam, (data) => {
-                        const ids = data.from.id
-                        switch(grup){
-                            case  'A':
-                                this.sendMessage(id, `${today}\nBerikut #KomposisiGroupA Shift ${datas} :${fullTeamA}`)
-                                break
-                            case 'B':
-                                this.sendMessage(id, `Dear All, \n\nBerikut #KomposisiGroupB Shift ${datas} pada ${today} :${fullTeamB}`)
-                                break
-                            case  'C':
-                                this.sendMessage(id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${datas} pada ${today} :${fullTeamC}`)
-                                break
-                            case 'D':
-                                this.sendMessage(id, `${today}\n Shift ${datas} #Grup${grup} :${fullTeamD}`)
-                                break
-                            default:
-                                this.sendMessage(id, "System Error")
-                                break
-                        }
-                    })
-                })
 
-                
-
-                this.onText(commands.halfTeam, (data) => {
-                    this.sendMessage(data.from.id, `Group ${grup} Shift ${datas}`)
-                })
-            })
-
-            return
+            
+        } catch (err) {
+            console.log(err)
+            bot.on('polling_error', (error) => {
+                console.error('Polling error:', error);
+            });
         }
-      }
+    }
+
+    // getGenerate() {
+    //     const generateKomposisi = (id, grup) => {
+    //         this.sendMessage(id, "Shift Berapa ka ??", {
+    //             reply_markup: {
+    //                 inline_keyboard: shiftTime
+    //             }
+    //         })
+        
+    //         this.on("callback_query", callbacks => {
+    //             const datas = callbacks.data;
+    //             console.log(callbacks)
+    //             this.sendMessage(callbacks.from.id, hadirText)
+    //             this.onText(commands.fullTeam, (data) => {
+    //                 const ids = data.from.id
+    //                 const chatID = data.chat.id
+    //                 const messageId = data.message_id
+    //                 switch(grup){
+    //                     case  'A':
+    //                         this.sendMessage(callbacks.from.id, `${checkTime()}\nBerikut #KomposisiGroupA Shift ${datas} :${fullTeamA}`)
+    //                         this.deleteMessage(chatID,messageId )
+    //                         break
+    //                     case 'B':
+    //                         this.sendMessage(callbacks.from.id, `Dear All, \n\nBerikut #KomposisiGroupB Shift ${datas} pada ${checkTime()} :${fullTeamB}`)
+    //                         this.deleteMessage(chatID,messageId)
+    //                         break
+    //                     case  'C':
+    //                         this.sendMessage(callbacks.from.id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${datas} pada ${checkTime()} :${fullTeamC}`)
+    //                         this.deleteMessage(chatID,messageId)
+    //                         break
+    //                     case 'D':
+    //                         this.sendMessage(callbacks.from.id, `${checkTime()}\n Shift ${datas} #Grup${grup} :${fullTeamD}`)
+    //                         this.deleteMessage(chatID,messageId)
+    //                         break
+    //                     default:
+    //                         this.sendMessage(callbacks.from.id, "System Error")
+    //                         break
+    //                 }
+    //             })
+    //             this.onText(commands.halfTeam, (data) => {
+    //                 this.sendMessage(data.from.id, `Group ${grup} Shift ${datas}`)
+    //             })
+    //         })
+    //     }
+    //   try {
+    //       this.onText(commands.generate, (data) => {
+    //           this.sendMessage(data.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
+    //               reply_markup: {
+    //                   inline_keyboard: groupBCA
+    //               }
+    //           })
+    //       })
+
+    //       this.on("callback_query", callback => {
+    //           const callbackNameGroup = callback.data
+    //           const id = callback.from.id
+    //           switch (callbackNameGroup){
+    //               case "A":
+    //                   generateKomposisi(id, callbackNameGroup)
+    //                   break
+    //               case "B":
+    //                   generateKomposisi(id, callbackNameGroup)
+    //                   break
+    //               case "C":
+    //                   generateKomposisi(id, callbackNameGroup)
+    //                   break
+    //               case "D":
+    //                   generateKomposisi(id, callbackNameGroup)
+    //                   break
+    //           }
+    //       })
+    //   } catch (error) {
+    //       console.log(error)
+    //   }
+      
+    // }
 
 }
 
