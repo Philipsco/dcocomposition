@@ -59,44 +59,26 @@ class SysoBot extends TelegramBot {
         });
     }
 
-    async generate (id, grup) {
+    generate (id, grup) {
         this.sendMessage(id, shiftTime)
-        await this.onText(commands.shiftOne, data => {
-            this.sendMessage(data.from.id, hadirText)
-            this.generateKomposisi(data.from.id,grup,1)
-        })
-        await this.onText(commands.shiftTwo, data => {
-            this.sendMessage(data.from.id, hadirText)
-            this.generateKomposisi(data.from.id,grup,2)
-        })
-        await this.onText(commands.shiftThree, data => {
-            this.sendMessage(data.from.id, hadirText)
-            this.generateKomposisi(data.from.id,grup,3)
-        })
-        
-        // this.on("message", async data => {
-        //     const shift = data.text;
-        //     switch (shift) {
-        //         case "/shift_1":
-        //             await this.sendMessage(id, hadirText)
-        //             await this.generateKomposisi(id,grup,1)
-        //             break;
-        //         case "/shift_2":
-        //             await this.sendMessage(id, hadirText)
-        //             await this.generateKomposisi(id,grup,2)
-        //             break;
-        //         case "/shift_3":
-        //             await this.sendMessage(id, hadirText)
-        //             await this.generateKomposisi(id,grup,3)
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // })
+
+        this.onText(commands.shiftOne, data => {
+        this.sendMessage(data.from.id, hadirText) 
+        this.generateKomposisi(grup,1)
+    })
+    this.onText(commands.shiftTwo, data => {
+        this.sendMessage(data.from.id, hadirText)
+        this.generateKomposisi(grup,2)
+    })
+    this.onText(commands.shiftThree, data => {
+        this.sendMessage(data.from.id, hadirText)
+        this.generateKomposisi(grup,3) 
+    })
+
     }
 
-    async generateKomposisi (id,grup,shift) {
-        await this.onText(commands.fullTeam, data => {
+    generateKomposisi (grup,shift) {
+        this.onText(commands.fullTeam, data => {
             switch (grup) {
                 case 'A':
                     this.sendMessage(data.from.id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
@@ -115,7 +97,8 @@ class SysoBot extends TelegramBot {
                     break
             }
         })
-        await this.onText(commands.halfTeam, data => {
+        
+        this.onText(commands.halfTeam, data => {
             switch (grup) {
                 case 'A':
                     this.sendMessage(id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
@@ -138,34 +121,36 @@ class SysoBot extends TelegramBot {
 
     getGenerate(){
         try {
-            this.onText(commands.generate, async (callback) => {
+            this.onText(commands.generate, (callback) => {
                 //console.log(callback)
-                await this.sendMessage(callback.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
+                this.sendMessage(callback.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
                     reply_markup: {
                         inline_keyboard: groupBCA
                     }
-                }).then(this.on("callback_query", async (dataGrup)=> {
-                    const grup  = dataGrup.data
-                    const chatId = dataGrup.from.id
-                    switch (dataGrup.data) {
-                        case 'A':
-                            await this.generate(chatId, grup)
-                            break;
-                        case 'B':
-                            await this.generate(chatId, grup)
-                            break;
-                        case 'C':
-                            await this.generate(chatId, grup)
-                            break;
-                        case 'D':
-                            await this.generate(chatId, grup)
-                            break;
-                        default:
-                            break;
-                    }
-                }))
+                })
             })
 
+            this.on("callback_query", (dataGrup)=> {
+                const grup  = dataGrup.data
+                const chatId = dataGrup.from.id
+                switch (dataGrup.data) {
+                    case 'A':
+                        this.generate(chatId, grup)
+                        break;
+                    case 'B':
+                        this.generate(chatId, grup)
+                        break;
+                    case 'C':
+                        this.generate(chatId, grup)
+                        break;
+                    case 'D':
+                        this.generate(chatId, grup)
+                        break;
+                    default:
+                        break;
+                }
+
+            })
             
         } catch (err) {
             console.log(err)
