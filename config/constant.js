@@ -130,6 +130,6 @@ Tidak Hadir: -
 *GAC   
 Hadir: ABR (SL/SOC), DRH (FOC),Dimas (PMX) 
 Tidak Hadir: - 
-----------------------------------------------------------------------------------------------------
-`
+---------------------------------------------------------------------------------------------------`
+
 module.exports = {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD}

@@ -15,6 +15,7 @@ const main = () => {
   sysoBot.getQuotes()
   sysoBot.getHelp()
   sysoBot.getGenerate()
+  sysoBot.getDate()
 }
 
 main()
