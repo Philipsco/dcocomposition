@@ -2,7 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const commands = require("../config/cmd.js")
 const {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD} = require("../config/constant.js");
 const {checkTime} = require("../utils/utility.js")
-const {pool} = require('../config/conn.js')
+const {db} = require('../config/conn.js')
 const today = checkTime()
 let dataGenerate =[]
 class SysoBot extends TelegramBot {
@@ -154,7 +154,7 @@ class SysoBot extends TelegramBot {
     }
 
     async getDate() {
-        let dateNow = await pool.query('SELECT NOW()')
+        let dateNow = await db.query('SELECT * FROM dataKaryawan')
         console.log(dateNow) // <---  the result of running query
     }
 }
