@@ -3,6 +3,7 @@ const commands = require("../config/cmd.js")
 const {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD} = require("../config/constant.js");
 const {checkTime} = require("../utils/utility.js")
 const today = checkTime()
+let dataGenerate =[]
 class SysoBot extends TelegramBot {
     constructor(token, options) {
         super(token, options);
@@ -59,104 +60,104 @@ class SysoBot extends TelegramBot {
         });
     }
 
-    generate (id, grup) {
-        this.sendMessage(id, shiftTime)
-
-        this.onText(commands.shiftOne, data => {
-        this.sendMessage(data.from.id, hadirText) 
-        this.generateKomposisi(grup,1)
-    })
-    this.onText(commands.shiftTwo, data => {
-        this.sendMessage(data.from.id, hadirText)
-        this.generateKomposisi(grup,2)
-    })
-    this.onText(commands.shiftThree, data => {
-        this.sendMessage(data.from.id, hadirText)
-        this.generateKomposisi(grup,3) 
-    })
-
-    }
-
-    generateKomposisi (grup,shift) {
-        this.onText(commands.fullTeam, data => {
-            switch (grup) {
-                case 'A':
-                    this.sendMessage(data.from.id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
-                    break
-                case 'B':
-                    this.sendMessage(data.from.id, `Dear All, \n\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${checkTime()} :${fullTeamB}`) 
-                    break
-                case  'C':
-                    this.sendMessage(data.from.id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${shift} pada ${checkTime()} :${fullTeamC}`)
-                    break
-                case 'D':
-                    this.sendMessage(data.from.id, `${today}\n Shift ${shift} #Grup${grup} :${fullTeamD}`)
-                    break
-                default:
-                    this.sendMessage(data.from.id, "System Error")
-                    break
-            }
-        })
+    async getGenerate(){
         
-        this.onText(commands.halfTeam, data => {
-            switch (grup) {
-                case 'A':
-                    this.sendMessage(id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
-                    break
-                case 'B':
-                    this.sendMessage(id, `Dear All, \n\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${checkTime()} :${fullTeamB}`) 
-                    break
-                case  'C':
-                    this.sendMessage(id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${shift} pada ${checkTime()} :${fullTeamC}`)
-                    break
-                case 'D':
-                    this.sendMessage(id, `${today}\n Shift ${shift} #Grup${grup} :${fullTeamD}`)
-                    break
-                default:
-                    this.sendMessage(id, "System Error")
-                    break
-            }
-        })
-    }
-
-    getGenerate(){
         try {
-            this.onText(commands.generate, (callback) => {
-                //console.log(callback)
-                this.sendMessage(callback.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
-                    reply_markup: {
-                        inline_keyboard: groupBCA
-                    }
-                })
+            await this.onText(commands.generate, (callback) => {
+                this.sendMessage(callback.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`)
             })
 
-            this.on("callback_query", (dataGrup)=> {
-                const grup  = dataGrup.data
-                const chatId = dataGrup.from.id
-                switch (dataGrup.data) {
-                    case 'A':
-                        this.generate(chatId, grup)
-                        break;
-                    case 'B':
-                        this.generate(chatId, grup)
-                        break;
-                    case 'C':
-                        this.generate(chatId, grup)
-                        break;
-                    case 'D':
-                        this.generate(chatId, grup)
-                        break;
-                    default:
-                        break;
-                }
+            await this.onText(commands.groupA, data => {
+                dataGenerate.push('A')
+                this.sendMessage(data.from.id, shiftTime)
+            })
 
+            await this.onText(commands.groupB, data => {
+                dataGenerate.push('B')
+                this.sendMessage(data.from.id, shiftTime)
+                
+            })
+
+            await this.onText(commands.groupC, data => {
+                dataGenerate.push('C')
+                this.sendMessage(data.from.id, shiftTime)
+                
+            })
+
+            await this.onText(commands.groupD, data => {
+                dataGenerate.push('D')
+                this.sendMessage(data.from.id, shiftTime)
+                
+            })
+
+            await this.onText(commands.shiftOne, data => {
+                dataGenerate.push(1)
+                this.sendMessage(data.from.id, hadirText) 
+                console.log(dataGenerate)
+                
+            })
+
+            await this.onText(commands.shiftTwo, data => {
+                dataGenerate.push(2)
+                this.sendMessage(data.from.id, hadirText) 
+                
+            })
+
+            await this.onText(commands.shiftThree, data => {
+                dataGenerate.push(3)
+                this.sendMessage(data.from.id, hadirText) 
+                
+            })
+
+            await this.onText(commands.fullTeam, data => {
+                let grup = dataGenerate[0]
+                let shift = dataGenerate[1]
+                switch (grup) {
+                    case 'A':
+                        this.sendMessage(data.from.id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
+                        dataGenerate.splice(0,dataGenerate.length)
+                        console.log(dataGenerate)
+                        break
+                    case 'B':
+                        this.sendMessage(data.from.id, `Dear All, \n\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${checkTime()} :${fullTeamB}`) 
+                        dataGenerate.splice(0,dataGenerate.length)
+                        break
+                    case 'C':
+                        this.sendMessage(data.from.id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${shift} pada ${checkTime()} :${fullTeamC}`)
+                        dataGenerate.splice(0,dataGenerate.length)
+                        break
+                    case 'D':
+                        this.sendMessage(data.from.id, `${today}\n Shift ${shift} #Grup${grup} :${fullTeamD}`)
+                        dataGenerate.splice(0,dataGenerate.length)
+                        break
+                    default:
+                        this.sendMessage(data.from.id, "System Error")
+                        break
+                }
+            })
+
+            await this.onText(commands.halfTeam, data => {
+                switch (grup) {
+                    case 'A':
+                        this.sendMessage(id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
+                        break
+                    case 'B':
+                        this.sendMessage(id, `Dear All, \n\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${checkTime()} :${fullTeamB}`) 
+                        break
+                    case  'C':
+                        this.sendMessage(id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${shift} pada ${checkTime()} :${fullTeamC}`)
+                        break
+                    case 'D':
+                        this.sendMessage(id, `${today}\n Shift ${shift} #Grup${grup} :${fullTeamD}`)
+                        break
+                    default:
+                        this.sendMessage(id, "System Error")
+                        break
+                }
             })
             
         } catch (err) {
             console.log(err)
-            bot.on('polling_error', (error) => {
-                console.error('Polling error:', error);
-            });
         }
     }
 

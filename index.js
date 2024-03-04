@@ -3,7 +3,12 @@ const env = require("dotenv")
 env.config()
 
 const botToken = process.env.BOT_TOKEN
-const sysoBot = new Bots(botToken, {polling: true});
+const sysoBot = new Bots(botToken, {polling: {
+  params: {
+    limit: 1,
+    offset: 2
+  }
+}});
 
 const main = () => {
   sysoBot.getGreeting()

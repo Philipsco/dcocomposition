@@ -11,25 +11,25 @@ function checkTime() {
 
       switch (day) {
         case 0:
-          day = "Sunday";
+          day = "Minggu";
           break;
         case 1:
-          day = "Monday";
+          day = "Senin";
           break;
         case 2:
-           day = "Tuesday";
+           day = "Selasa";
           break;
         case 3:
-          day = "Wednesday";
+          day = "Rabu";
           break;
         case 4:
-          day = "Thursday";
+          day = "Kamis";
           break;
         case 5:
-          day = "Friday";
+          day = "Jumat";
           break;
         case 6:
-          day = "Saturday";
+          day = "Sabtu";
       }
 
     return day+ ", " + date + "-" + month + "-" + year
