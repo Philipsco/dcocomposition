@@ -13,7 +13,10 @@ const cmd = {
     groupA : /\/group_A$/,
     groupB : /\/group_B$/,
     groupC : /\/group_C$/,
-    groupD : /\/group_D$/
+    groupD : /\/group_D$/,
+    insertDb : /\/insert_db$/,
+    updateDb : /\/update_db$/,
+    deleteDb :  /\/delete_db$/
 };
 
 module.exports = cmd;

@@ -1,3 +1,6 @@
+const commands = require("../config/cmd.js");
+const { panduanText } = require("../config/constant.js");
+
 function checkTime() {
     const local_zone = 7
     const _date = new Date()
@@ -35,4 +38,13 @@ function checkTime() {
     return day+ ", " + date + "-" + month + "-" + year
 }
 
-module.exports = {checkTime};
+function checkCommands(bot) {
+  bot.on("message", (data) => {
+      const isInCommand = Object.values(commands).some((keyword) => keyword.test(data.text))
+      if (!isInCommand) {
+          bot.sendMessage(data.from.id, "Saya tidak mengerti 🙏\nketik \/\help untuk memunculkan panduan")
+      }
+  })
+}
+
+module.exports = {checkTime,checkCommands};

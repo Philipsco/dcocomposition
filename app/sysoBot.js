@@ -1,37 +1,14 @@
 const TelegramBot = require('node-telegram-bot-api');
 const commands = require("../config/cmd.js")
 const {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD} = require("../config/constant.js");
-const {checkTime} = require("../utils/utility.js")
+const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
 const today = checkTime()
 let dataGenerate =[]
 class SysoBot extends TelegramBot {
     constructor(token, options) {
         super(token, options);
-        this.on("message", (data) => {
-            const isInCommand = Object.values(commands).some((keyword) => keyword.test(data.text));
-        if(!isInCommand){
-            this.sendMessage(data.from.id, invalidCommand, {
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {
-                            text : "Panduan Penggunaan",
-                            callback_data: "panduan_pengguna"
-                            }
-                        ]
-                    ]
-                }
-            })
-        }
-        });
-
-        this.on('callback_query', callback => {
-            const callbackName = callback.data
-            if(callbackName === "panduan_pengguna"){
-                this.sendMessage(callback.from.id, panduanText)
-            }
-        })
+        checkCommands(this)
     }
 
     getGreeting() {
@@ -43,7 +20,6 @@ class SysoBot extends TelegramBot {
         this.onText(commands.quote, async (data) => {
           const quoteEndpoint = "https://api.kanye.rest/";
           try {
-            // ambil data quotes dari internet kak yang lain jangan dijadiin edit, non edit aja (yang copy paste jadi error wkwk)
             const apiCall = await fetch(quoteEndpoint);
             const { quote } = await apiCall.json();
     
@@ -59,6 +35,13 @@ class SysoBot extends TelegramBot {
         this.onText(commands.help, (data) => {
           this.sendMessage(data.from.id, panduanText);
         });
+    }
+
+    generateKeterangan(id,grup){
+        this.on('message')
+        this.sendMessage(id, "Silahkan masukan inisial yang sedang sakit\n\n")
+        this.sendMessage(id, "Silahkan masukan inisial yang sedang izin\n\n")
+        this.sendMessage(id, "Silahkan masukan inisial yang sedang cuti\n\n")
     }
 
     getGenerate() {
@@ -119,6 +102,7 @@ class SysoBot extends TelegramBot {
                         break
                     default:
                         this.sendMessage(data.from.id, "System Error")
+                        dataGenerate.splice(0,dataGenerate.length)
                         break
                 }
             })
@@ -145,6 +129,7 @@ class SysoBot extends TelegramBot {
                         break
                     default:
                         this.sendMessage(data.from.id, "System Error")
+                        dataGenerate.splice(0,dataGenerate.length)
                         break
                 }
             })
@@ -156,6 +141,39 @@ class SysoBot extends TelegramBot {
     async getDate() {
         let dateNow = await db.query('SELECT * FROM dataKaryawan')
         console.log(dateNow) // <---  the result of running query
+    }
+
+    async insertDatabase() {
+        await this.onText(commands.insertDb, data => {
+            this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\n\n[inisial],[grup],[role],[site]\n\nContoh : \nPBK,A,DCMon,MBCA")
+        })
+
+        await this.on('message', async (data) => {
+            const [inisial, grup, role, site] = data.text.split(",")
+
+            const res = await db.query("INSERT INTO datakaryawan (inisial, grup, role, site) VALUES ($1, $2,$3, $4)", [inisial, grup, role, site])
+            console.log(res)
+            this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
+        })
+    }
+
+    async updateDatabase(){
+        await this.onText(commands.updateDb, data => {
+            this.sendMessage(data.from.id, "Silahkan masukan data yang ingin di update dengan format sebagai berikut.\n\n[inisial],[grup],[role],[site]\n\nContoh : \nPBK,A,DCMon,MBCA")
+        })
+    }
+
+    async deleteDatabase(){
+        await this.onText(commands.deleteDb, data => {
+            this.sendMessage(data.from.id, "Silahkan masukan inisial yang ingin di hapus")
+        })
+
+        await this.on('message', async (data) => {
+            const inisial = data.text
+            const res = await db.query("DELETE FROM datakaryawan WHERE inisial=$1",[inisial])
+            if (!res) return this.sendMessage(data.from.id,"Data tidak ditemukan")
+            this.sendMessage(data.from.id,"Berhasil menghapus data")
+        })
     }
 }
 
