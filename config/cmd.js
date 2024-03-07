@@ -2,6 +2,7 @@ const cmd = {
     start: /\/start/,
     generate:/\/generate/,
     quote: /\/quote/,
+    quake: /\/gempa/,
     help:/\/help/,
     sick: /^sakit$/,
     onLeave: /^cuti$/,
@@ -16,7 +17,8 @@ const cmd = {
     groupD : /\/group_D$/,
     insertDb : /\/insert_db$/,
     updateDb : /\/update_db$/,
-    deleteDb :  /\/delete_db$/
+    deleteDb :  /\/delete_db$/,
+    delete : 'delete'
 };
 
 module.exports = cmd;

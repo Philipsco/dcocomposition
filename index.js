@@ -16,6 +16,10 @@ const main = () => {
   sysoBot.getHelp()
   sysoBot.getGenerate()
   sysoBot.getDate()
+  sysoBot.insertDatabase()
+  sysoBot.deleteDatabase()
+  sysoBot.updateDatabase()
+  sysoBot.getEathquake()
 }
 
 main()

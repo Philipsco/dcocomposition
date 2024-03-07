@@ -37,6 +37,27 @@ class SysoBot extends TelegramBot {
         });
     }
 
+    getEathquake() {
+        this.onText(commands.quake, async (data) => {
+            const id = data.from.id
+            const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json'
+
+            this.sendMessage(id, "mohon tunggu juragan...")
+
+            try {
+                const api = await fetch(bmkg_endpoint)
+                const response = await api.json()
+                const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
+                const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}`
+
+                const result = `info gempa terbaru:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
+                this.sendPhoto(id, image, { caption: result })
+            } catch (e) {
+                this.sendMessage("Gagal memuat data berita, silahkan coba lagi 😢")
+            }
+        })
+    }
+
     generateKeterangan(id,grup){
         this.on('message')
         this.sendMessage(id, "Silahkan masukan inisial yang sedang sakit\n\n")
@@ -144,17 +165,19 @@ class SysoBot extends TelegramBot {
     }
 
     async insertDatabase() {
-        await this.onText(commands.insertDb, data => {
+        await this.onText(commands.insertDb, async data => {
             this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\n\n[inisial],[grup],[role],[site]\n\nContoh : \nPBK,A,DCMon,MBCA")
+            await this.on('message', async (data) => {
+                const [inisial, grup, role] = data.text.split(",")
+    
+                const res = await db.query("INSERT INTO dataKaryawan (inisial, grup, role) VALUES ($1, $2,$3)", [inisial, grup, role])
+                console.log(res)
+                this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
+            })
+        
         })
 
-        await this.on('message', async (data) => {
-            const [inisial, grup, role, site] = data.text.split(",")
-
-            const res = await db.query("INSERT INTO datakaryawan (inisial, grup, role, site) VALUES ($1, $2,$3, $4)", [inisial, grup, role, site])
-            console.log(res)
-            this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
-        })
+        
     }
 
     async updateDatabase(){
@@ -164,16 +187,18 @@ class SysoBot extends TelegramBot {
     }
 
     async deleteDatabase(){
-        await this.onText(commands.deleteDb, data => {
+        await this.onText(commands.deleteDb, async data => {
             this.sendMessage(data.from.id, "Silahkan masukan inisial yang ingin di hapus")
+
+            await this.on('message', async (data) => {
+                const inisial = data.text
+                const res = await db.query("DELETE FROM dataKaryawan WHERE inisial=$1",[inisial])
+                if (!res) return this.sendMessage(data.from.id,"Data tidak ditemukan")
+                this.sendMessage(data.from.id,"Berhasil menghapus data")
+            })
         })
 
-        await this.on('message', async (data) => {
-            const inisial = data.text
-            const res = await db.query("DELETE FROM datakaryawan WHERE inisial=$1",[inisial])
-            if (!res) return this.sendMessage(data.from.id,"Data tidak ditemukan")
-            this.sendMessage(data.from.id,"Berhasil menghapus data")
-        })
+        
     }
 }
 
