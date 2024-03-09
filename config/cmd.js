@@ -4,8 +4,9 @@ const cmd = {
     quote: /\/quote/,
     quake: /\/gempa/,
     help:/\/help/,
-    sick: /^sakit$/,
-    onLeave: /^cuti$/,
+    sick: /^sakit (.*)/,
+    onLeave: /^cuti (.*)/,
+    izin: /^izin (.*)/,
     fullTeam: /\/masuk_semua$/,
     halfTeam: /\/ada_yang_tidak_hadir$/,
     shiftOne : /\/shift_1$/,
@@ -18,7 +19,9 @@ const cmd = {
     insertDb : /\/insert_db$/,
     updateDb : /\/update_db$/,
     deleteDb :  /\/delete_db$/,
-    delete : 'delete'
+    delete : /^delete (.*)/,
+    update  : /^update (.*) with (.*)$/,
+    insert : /^add (.*)/,
 };
 
 module.exports = cmd;

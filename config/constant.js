@@ -2,9 +2,6 @@ const CMD_A = "A";
 const CMD_B = "B";
 const CMD_C = "C";
 const CMD_D = "D";
-const SHIFT1 = 1;
-const SHIFT2 = 2;
-const SHIFT3 = 3;
 const invalidCommand = "Mohon maaf command tidak tersedia! 🙏"
 
 const shiftTime = `
@@ -37,7 +34,14 @@ const groupBCA = [
 
 const panduanText = `
 Silahkan gunakan perintah yang tersedia berikut ini :
-xxxxxx
+\/start - Memulai menjalankan bot
+\/generate - Generate komposisi Grup Data Center BCA
+\/gempa - Generate informasi gempa saat ini
+\/quote - Generate quote untuk kamu hari ini
+\/help - membantu untuk pengecekan command yang digunakan
+\/insert_db - input data karyawan
+\/update_db - update data karyawan
+\/delete_db - delete data karyawan
 
 Terimakasih
 `
@@ -45,17 +49,21 @@ const greetText= `
 Welcome to the SysoBot!
 How can I assist you?
 Possible use cases:
-\/generate: membantu kamu untuk membuat komposisi grup yang bertugas hari ini
-\/help: membantu mengetahui command apa saja yang ada di Bot ini
-\/quote: membantu kamu makin semangat buat bekerja hari ini
+\/generate - Generate komposisi Grup Data Center BCA
+\/gempa - Generate informasi gempa saat ini
+\/quote - Generate quote untuk kamu hari ini
+\/help - membantu untuk pengecekan command yang digunakan
 \/generatePantun: membantu kamu untuk membuat pantun hari ini
+\/insert_db - input data karyawan
+\/update_db - update data karyawan
+\/delete_db - delete data karyawan
 
 Thankyou
 `
 const hadirText = `
-Apakah member grup Masuk semua??
-\/masuk_semua: untuk memberi tahu bahwa semua hadir
-\/ada_yang_tidak_hadir: untuk memberi tahu bahwa ada yang tidak hadir
+Apakah member grup masuk semua??
+\/masuk_semua - untuk memberi tahu bahwa semua hadir
+\/ada_yang_tidak_hadir - untuk memberi tahu bahwa ada yang tidak hadir
 
 Terimakasih
 `

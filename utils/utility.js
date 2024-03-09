@@ -1,5 +1,4 @@
 const commands = require("../config/cmd.js");
-const { panduanText } = require("../config/constant.js");
 
 function checkTime() {
     const local_zone = 7
