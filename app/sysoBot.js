@@ -264,7 +264,7 @@ class SysoBot extends TelegramBot {
 
                 apiCall.json().then(saa => {
                     console.log(saa)
-                    this.sendMessage(data.from.id, `${today}\nPantun kamu pada hari ini adalah\n\n${saa.isi}\n${saa.sampiran}`)
+                    this.sendMessage(data.from.id, `${today}\nPantun kamu pada hari ini adalah\n\n${saa.sampiran}\n${saa.isi}`)
                 })
                 
               } catch (e) {

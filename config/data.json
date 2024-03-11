@@ -1,184 +1,184 @@
 [
     {
-        "Group": "A",
-        "Site": "WSA2",
-        "Role": "SYSO",
-        "Nama": "RZP",
-        "Leader": 1
+        "grup": "A",
+        "sites": "WSA2",
+        "role": "SYSO",
+        "nama": "RZP",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "WSA2",
-        "Role": "SYSO",
-        "Nama": "YRA",
-        "Leader": 0
+        "grup": "A",
+        "sites": "WSA2",
+        "role": "SYSO",
+        "nama": "YRA",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "WSA2",
-        "Role": "SYSO",
-        "Nama": "ARR",
-        "Leader": 0
+        "grup": "A",
+        "sites": "WSA2",
+        "role": "SYSO",
+        "nama": "ARR",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "WSA2",
-        "Role": "DCMon",
-        "Nama": "BAL",
-        "Leader": 1
+        "grup": "A",
+        "sites": "WSA2",
+        "role": "DCMon",
+        "nama": "BAL",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "WSA2",
-        "Role": "DCMon",
-        "Nama": "ASN",
-        "Leader": 0
+        "grup": "A",
+        "sites": "WSA2",
+        "role": "DCMon",
+        "nama": "ASN",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "WSA2",
-        "Role": "DCMon",
-        "Nama": "ABA",
-        "Leader": 0
+        "grup": "A",
+        "sites": "WSA2",
+        "role": "DCMon",
+        "nama": "ABA",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "WSA2",
-        "Role": "SOC",
-        "Nama": "NDA",
-        "Leader": 0
+        "grup": "A",
+        "sites": "WSA2",
+        "role": "SOC",
+        "nama": "NDA",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "WSA2",
-        "Role": "SL",
-        "Nama": "RAN",
-        "Leader": 1
+        "grup": "A",
+        "sites": "WSA2",
+        "role": "SL",
+        "nama": "RAN",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "MBCA",
-        "Role": "SYSO",
-        "Nama": "AMN",
-        "Leader": 1
+        "grup": "A",
+        "sites": "MBCA",
+        "role": "SYSO",
+        "nama": "AMN",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "MBCA",
-        "Role": "SYSO",
-        "Nama": "SON",
-        "Leader": 0
+        "grup": "A",
+        "sites": "MBCA",
+        "role": "SYSO",
+        "nama": "SON",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "MBCA",
-        "Role": "SYSO",
-        "Nama": "WYG",
-        "Leader": 0
+        "grup": "A",
+        "sites": "MBCA",
+        "role": "SYSO",
+        "nama": "WYG",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "MBCA",
-        "Role": "DCMon",
-        "Nama": "DCW",
-        "Leader": 1
+        "grup": "A",
+        "sites": "MBCA",
+        "role": "DCMon",
+        "nama": "DCW",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "MBCA",
-        "Role": "DCMon",
-        "Nama": "PBK",
-        "Leader": 0
+        "grup": "A",
+        "sites": "MBCA",
+        "role": "DCMon",
+        "nama": "PBK",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "MBCA",
-        "Role": "DCMon",
-        "Nama": "FKH",
-        "Leader": 0
+        "grup": "A",
+        "sites": "MBCA",
+        "role": "DCMon",
+        "nama": "FKH",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "MBCA",
-        "Role": "SL",
-        "Nama": "NHU",
-        "Leader": 1
+        "grup": "A",
+        "sites": "MBCA",
+        "role": "SL",
+        "nama": "NHU",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "MBCA",
-        "Role": "SOC",
-        "Nama": "WAR",
-        "Leader": 0
+        "grup": "A",
+        "sites": "MBCA",
+        "role": "SOC",
+        "nama": "WAR",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "GAS",
-        "Role": "SYSO",
-        "Nama": "EKA",
-        "Leader": 1
+        "grup": "A",
+        "sites": "GAS",
+        "role": "SYSO",
+        "nama": "EKA",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "GAS",
-        "Role": "SYSO",
-        "Nama": "FIK",
-        "Leader": 0
+        "grup": "A",
+        "sites": "GAS",
+        "role": "SYSO",
+        "nama": "FIK",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "GAS",
-        "Role": "SYSO",
-        "Nama": "CHF",
-        "Leader": 0
+        "grup": "A",
+        "sites": "GAS",
+        "role": "SYSO",
+        "nama": "CHF",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "GAS",
-        "Role": "DCMon",
-        "Nama": "RNA",
-        "Leader": 1
+        "grup": "A",
+        "sites": "GAS",
+        "role": "DCMon",
+        "nama": "RNA",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "GAS",
-        "Role": "DCMon",
-        "Nama": "GNG",
-        "Leader": 0
+        "grup": "A",
+        "sites": "GAS",
+        "role": "DCMon",
+        "nama": "GNG",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "GAS",
-        "Role": "DCMon",
-        "Nama": "ALJ",
-        "Leader": 0
+        "grup": "A",
+        "sites": "GAS",
+        "role": "DCMon",
+        "nama": "ALJ",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "GAS",
-        "Role": "SL",
-        "Nama": "ASY",
-        "Leader": 1
+        "grup": "A",
+        "sites": "GAS",
+        "role": "SL",
+        "nama": "ASY",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "GAC",
-        "Role": "SL",
-        "Nama": "APA",
-        "Leader": 1
+        "grup": "A",
+        "sites": "GAC",
+        "role": "SL",
+        "nama": "APA",
+        "leader": 1
       },
       {
-        "Group": "A",
-        "Site": "GAC",
-        "Role": "FOC",
-        "Nama": "ADN",
-        "Leader": 0
+        "grup": "A",
+        "sites": "GAC",
+        "role": "FOC",
+        "nama": "ADN",
+        "leader": 0
       },
       {
-        "Group": "A",
-        "Site": "GAC",
-        "Role": "FOC",
-        "Nama": "MRW",
-        "Leader": 0
+        "grup": "A",
+        "sites": "GAC",
+        "role": "FOC",
+        "nama": "MRW",
+        "leader": 0
       }
 ]
