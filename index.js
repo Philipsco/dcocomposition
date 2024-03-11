@@ -20,6 +20,7 @@ const main = () => {
   sysoBot.deleteDatabase()
   sysoBot.updateDatabase()
   sysoBot.getEathquake()
+  sysoBot.sendInfoGempaAuto()
 }
 
 main()

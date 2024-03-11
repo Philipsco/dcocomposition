@@ -5,19 +5,23 @@ const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
 const today = checkTime()
 let dataGenerate =[]
+let dataUserIds = []
+let dumpGempa
 class SysoBot extends TelegramBot {
     constructor(token, options) {
         super(token, options);
-        // checkCommands(this)
+        checkCommands(this)
     }
 
     getGreeting() {
         this.onText(commands.start, (data) => {
           this.sendMessage(data.chat.id, greetText);
+          this.checkAndAddChatIds(data.chat.id)
         });
     }
     getQuotes() {
         this.onText(commands.quote, async (data) => {
+            this.checkAndAddChatIds(data.chat.id)
           const quoteEndpoint = "https://api.kanye.rest/";
           try {
             const apiCall = await fetch(quoteEndpoint);
@@ -34,13 +38,24 @@ class SysoBot extends TelegramBot {
 
     getHelp() {
         this.onText(commands.help, (data) => {
-          this.sendMessage(data.from.id, panduanText);
+          this.sendMessage(data.from.id, panduanText)
+          this.checkAndAddChatIds(data.chat.id)
         });
+    }
+
+    checkAndAddChatIds(chatId) {
+        if(dataUserIds.includes(chatId)){
+            return true
+        } else{
+            dataUserIds.push(chatId)
+            return false
+        }
     }
 
     getEathquake() {
         this.onText(commands.quake, async (data) => {
             const id = data.from.id
+            this.checkAndAddChatIds(data.chat.id)
             const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json'
             this.sendMessage(id, "mohon ditunggu rekan seperjuangan...")
             try {
@@ -48,7 +63,10 @@ class SysoBot extends TelegramBot {
                 const response = await api.json()
                 const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
                 const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}`
-
+                if (dumpGempa===Tanggal) {
+                    this.sendMessage(data.from.id,"Info Gempa masih sama")
+                }
+                dumpGempa = Tanggal
                 const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
                 this.sendPhoto(id, image, { caption: result })
             } catch (e) {
@@ -56,6 +74,31 @@ class SysoBot extends TelegramBot {
                 this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
             }
         })
+    }
+
+    sendInfoGempaAuto (){
+        const duration = 1 * 10 * 1000; // 5 minutes in milliseconds
+            setInterval(async () => {
+                if (dataUserIds.length > 0) {
+                    const userId = dataUserIds.shift()
+                    const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json'
+                    try {
+                        const api = await fetch(bmkg_endpoint)
+                        const response = await api.json()
+                        const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
+                        const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}`
+                        if (dumpGempa===Tanggal) {
+                            this.sendMessage(userId,"Info Gempa masih sama")
+                        } else {
+                            dumpGempa = Tanggal
+                            const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
+                            this.sendPhoto(userId, image, { caption: result })
+                        }
+                    } catch (e) {
+                        this.sendMessage(userId,"Gagal memuat data berita, silahkan coba lagi 😢")
+                    }
+                }
+                }, duration);
     }
 
     generateKeterangan(){
@@ -184,20 +227,32 @@ class SysoBot extends TelegramBot {
         console.log(dateNow) // <---  the result of running query
     }
 
-    async insertDatabase() {
-        await this.onText(commands.insertDb, async data => {
+    async getInisial(inisial){
+        let res = await db.query("SELECT * FROM dataKaryawan WHERE inisial= $1", [inisial])
+        return res.rows[0] === undefined ? false : true
+    }
+
+    insertDatabase() {
+        this.onText(commands.insertDb, data => {
             this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\n\n[inisial],[grup],[role],[site]\n\nContoh : \nPBK,A,DCMon,MBCA")
-            await this.on('message', async (data) => {
-                const [inisial, grup, role, sites] = data.text.split(",")
-    
-                const res = await db.query("INSERT INTO dataKaryawan (inisial, grup, role, sites) VALUES ($1, $2,$3,$4)", [inisial, grup, role, sites])
-                console.log(res)
-                this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
-            })
-        
         })
 
-        
+        this.onText(commands.insert, async (data, after) => {
+            const [inisial, grup, role, sites] = after[1].split(",")
+            const leader = true  
+            const checkInisial = await this.getInisial(inisial)
+            try {
+                if (checkInisial === true) {
+                    this.sendMessage(data.from.id, `inisial ${inisial} sudah ada pada database kami`)
+                } else {
+                    const res = await db.query("INSERT INTO dataKaryawan (inisial, grup, role, leader, sites) VALUES ($1, $2,$3,$4, $5)", [inisial, grup, role, leader, sites])
+                    console.log(res)
+                    this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
+                } 
+            } catch (error) {
+                this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
+            }  
+        })
     }
 
     async updateDatabase(){
@@ -207,18 +262,21 @@ class SysoBot extends TelegramBot {
     }
 
     async deleteDatabase(){
-        await this.onText(commands.deleteDb, async data => {
+        this.onText(commands.deleteDb, async data => {
             this.sendMessage(data.from.id, "Silahkan masukan inisial yang ingin di hapus")
-
-            await this.on('message', async (data) => {
-                const inisial = data.text
-                const res = await db.query("DELETE FROM dataKaryawan WHERE inisial=$1",[inisial])
-                if (!res) return this.sendMessage(data.from.id,"Data tidak ditemukan")
-                this.sendMessage(data.from.id,"Berhasil menghapus data")
-            })
         })
 
-        
+        this.onText(commands.delete, async (data, after) => {
+            const inisial = after[1]
+            const checkInisial = await this.getInisial(inisial)
+            console.log(sad)
+            if (checkInisial === true) {
+                db.query("DELETE FROM dataKaryawan WHERE inisial=$1",[inisial])
+                this.sendMessage(data.from.id,"Berhasil menghapus data")
+            } else {
+                this.sendMessage(data.from.id,"data tidak ditemukan rekan")
+            }
+        })
     }
 }
 
