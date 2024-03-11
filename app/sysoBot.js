@@ -1,11 +1,11 @@
 const TelegramBot = require('node-telegram-bot-api');
 const commands = require("../config/cmd.js")
-const {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD} = require("../config/constant.js");
+const {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD, failedText, dataRandom} = require("../config/constant.js");
 const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
 const today = checkTime()
+const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/'
 let dataGenerate =[]
-let dataUserIds = []
 let dumpGempa
 class SysoBot extends TelegramBot {
     constructor(token, options) {
@@ -13,15 +13,33 @@ class SysoBot extends TelegramBot {
         checkCommands(this)
     }
 
+    async checkAndInsertDbUserId(userId, name){
+        try {
+            const res = await db.query("SELECT * FROM dataUserIDs WHERE userId=$1",[userId])
+            console.log(res.rows)
+            if(res.rows[0]=== undefined) {
+                const resp = db.query("INSERT INTO dataUserIDs (userId, userName) VALUES ($1, $2)", [userId, name])
+                return false
+            } else {
+                return true
+            }
+        } catch (e) {
+            this.sendMessage(data.from.id, failedText)
+            this.sendMessage(936687738,`${e} pada saat check dan insert db pada userid`)
+        }
+        
+    }
+
     getGreeting() {
         this.onText(commands.start, (data) => {
           this.sendMessage(data.chat.id, greetText);
-          this.checkAndAddChatIds(data.chat.id)
+          this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
         });
     }
+
     getQuotes() {
         this.onText(commands.quote, async (data) => {
-            this.checkAndAddChatIds(data.chat.id)
+            this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
           const quoteEndpoint = "https://api.kanye.rest/";
           try {
             const apiCall = await fetch(quoteEndpoint);
@@ -30,7 +48,7 @@ class SysoBot extends TelegramBot {
             this.sendMessage(data.from.id, `${today}\nQuotes kamu pada hari ini adalah\n\n${quote}`);
           } catch (e) {
             console.error(err);
-            this.sendMessage(data.from.id, "maaf silahkan ulangi lagi 🙏")
+            this.sendMessage(data.from.id, failedText)
             this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
           }
         });
@@ -39,66 +57,65 @@ class SysoBot extends TelegramBot {
     getHelp() {
         this.onText(commands.help, (data) => {
           this.sendMessage(data.from.id, panduanText)
-          this.checkAndAddChatIds(data.chat.id)
+          this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
         });
-    }
-
-    checkAndAddChatIds(chatId) {
-        if(dataUserIds.includes(chatId)){
-            return true
-        } else{
-            dataUserIds.push(chatId)
-            return false
-        }
     }
 
     getEathquake() {
         this.onText(commands.quake, async (data) => {
             const id = data.from.id
-            this.checkAndAddChatIds(data.chat.id)
-            const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json'
+            this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
+            const bmkg = bmkg_endpoint+'autogempa.json'
             this.sendMessage(id, "mohon ditunggu rekan seperjuangan...")
             try {
-                const api = await fetch(bmkg_endpoint)
+                const api = await fetch(bmkg)
                 const response = await api.json()
                 const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-                const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}`
+                const image = `${bmkg_endpoint}${Shakemap}`
                 if (dumpGempa===Tanggal) {
                     this.sendMessage(data.from.id,"Info Gempa masih sama")
+                } else {
+                    dumpGempa = Tanggal
+                    const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
+                    this.sendPhoto(id, image, { caption: result })
                 }
-                dumpGempa = Tanggal
-                const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
-                this.sendPhoto(id, image, { caption: result })
             } catch (e) {
-                this.sendMessage(data.from.id,"Gagal memuat data berita, silahkan coba lagi 😢")
+                this.sendMessage(data.from.id, failedText)
                 this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
             }
         })
     }
 
-    sendInfoGempaAuto (){
-        const duration = 1 * 10 * 1000; // 5 minutes in milliseconds
-            setInterval(async () => {
-                if (dataUserIds.length > 0) {
-                    const userId = dataUserIds.shift()
-                    const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json'
+    async sendInfoGempaAuto (){
+        const duration = 1 * 30 * 1000
+        const bmkg = bmkg_endpoint+'autogempa.json'
+        const res = await db.query("SELECT * FROM dataUserIDs")
+        
+        let numberSelected = 0
+        setInterval(async () => {
+            if (res.rows.length > 0) {
+                for(let x = 0; x < res.rows.length; x++){
+                    const userId = res.rows[x].userid
                     try {
-                        const api = await fetch(bmkg_endpoint)
+                        const api = await fetch(bmkg)
                         const response = await api.json()
                         const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-                        const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}`
+                        const image = `${bmkg_endpoint}${Shakemap}`
                         if (dumpGempa===Tanggal) {
-                            this.sendMessage(userId,"Info Gempa masih sama")
-                        } else {
+                            numberSelected++
+                        } else{
                             dumpGempa = Tanggal
                             const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
                             this.sendPhoto(userId, image, { caption: result })
                         }
                     } catch (e) {
-                        this.sendMessage(userId,"Gagal memuat data berita, silahkan coba lagi 😢")
+                        this.sendMessage(userId, failedText)
                     }
                 }
-                }, duration);
+            } else {
+                clearInterval(duration)
+            }
+        }, duration)
     }
 
     generateKeterangan(){
@@ -219,12 +236,48 @@ class SysoBot extends TelegramBot {
             })
       } catch (error) {
           console.log(error)
+          this.sendMessage(data.from.id,failedText)
+          this.sendMessage(936687738,`${e} dengan command /generate`)
       }
     }
 
+    async getGeneratePantun(){
+        let min = Math.ceil(0);
+        let max = Math.floor(dataRandom.length);
+        let x = Math.floor(Math.random() * (max - min + 1)) + min;
+        this.onText(commands.generatePantun, async (data) => {
+            const pantunEndpoint = "https://rima.rfnaj.id/api/v1/pantun/karmina"
+            const request = {
+                'isi': dataRandom[x]
+            }
+
+            try {
+                const apiCall = await fetch(pantunEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json, plain/text'
+                    },
+                    referrerPolicy: "no-referrer",
+                    body: JSON.stringify(request)
+                })
+
+                apiCall.json().then(saa => {
+                    console.log(saa)
+                    this.sendMessage(data.from.id, `${today}\nPantun kamu pada hari ini adalah\n\n${saa.isi}\n${saa.sampiran}`)
+                })
+                
+              } catch (e) {
+                console.error(e);
+                this.sendMessage(data.from.id, failedText)
+                this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
+              }
+        })
+    }
+
     async getDate() {
-        let dateNow = await db.query('SELECT * FROM dataKaryawan')
-        console.log(dateNow) // <---  the result of running query
+        let dateNow = await db.query('SELECT * FROM dataUserIDs')
+        console.log(dateNow.rows) // <---  the result of running query
     }
 
     async getInisial(inisial){

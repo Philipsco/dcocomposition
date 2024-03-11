@@ -3,7 +3,30 @@ const CMD_B = "B";
 const CMD_C = "C";
 const CMD_D = "D";
 const invalidCommand = "Mohon maaf command tidak tersedia! 🙏"
+const failedText = "Gagal memuat data yang diminta, silahkan coba lagi atau hubungi PBK😢"
 
+const dataRandom = [
+  "Siap bang jago!!!",
+  "Ai Lap yu",
+  "Ganteng amat mas",
+  "hai cakep, kenalan dong",
+  "ga nyambung bego",
+  "jangan lupa sholat",
+  "kamu cantik, aku ganteng",
+  "senyumanmu bikin rindu",
+  "udah cantik, kaya lagi",
+  "jelek kali kau",
+  "indonesia tanah air beta",
+  "kuy mutualan",
+  "terimakasih",
+  "shombong amat",
+  "bodo amat",
+  "mohon maaf lahir batin",
+  "namanya siapa",
+  "jangan sok tau!!",
+  "selow aja kali",
+  "aku anak mama"
+];
 const shiftTime = `
 Masuk Shift apa ya ka kalau boleh tau??
 
@@ -36,6 +59,7 @@ const panduanText = `
 Silahkan gunakan perintah yang tersedia berikut ini :
 \/start - Memulai menjalankan bot
 \/generate - Generate komposisi Grup Data Center BCA
+\/generate_pantun: membantu kamu untuk membuat pantun hari ini
 \/gempa - Generate informasi gempa saat ini
 \/quote - Generate quote untuk kamu hari ini
 \/help - membantu untuk pengecekan command yang digunakan
@@ -53,7 +77,7 @@ Possible use cases:
 \/gempa - Generate informasi gempa saat ini
 \/quote - Generate quote untuk kamu hari ini
 \/help - membantu untuk pengecekan command yang digunakan
-\/generatePantun: membantu kamu untuk membuat pantun hari ini
+\/generate_pantun: membantu kamu untuk membuat pantun hari ini
 \/insert_db - input data karyawan
 \/update_db - update data karyawan
 \/delete_db - delete data karyawan
@@ -140,4 +164,4 @@ Hadir: ABR (SL/SOC), DRH (FOC),Dimas (PMX)
 Tidak Hadir: - 
 ---------------------------------------------------------------------------------------------------`
 
-module.exports = {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD}
+module.exports = {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD, failedText, dataRandom}

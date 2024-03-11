@@ -1,6 +1,7 @@
 const cmd = {
     start: /\/start/,
-    generate:/\/generate/,
+    generate:/\/generate$/,
+    generatePantun:/\/generate_pantun$/,
     quote: /\/quote/,
     quake: /\/gempa/,
     help:/\/help/,

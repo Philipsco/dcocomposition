@@ -21,6 +21,7 @@ const main = () => {
   sysoBot.updateDatabase()
   sysoBot.getEathquake()
   sysoBot.sendInfoGempaAuto()
+  sysoBot.getGeneratePantun()
 }
 
 main()
