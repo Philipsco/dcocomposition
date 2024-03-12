@@ -88,11 +88,11 @@ class SysoBot extends TelegramBot {
 
     async sendInfoGempaAuto (){
         const duration = 1 * 30 * 1000
-        const bmkg = bmkg_endpoint+'autogempa.json'
-        const res = await db.query("SELECT * FROM dataUserIDs")
         
         let numberSelected = 0
         setInterval(async () => {
+            const bmkg = bmkg_endpoint+'autogempa.json'
+            const res = await db.query("SELECT * FROM dataUserIDs")
             if (res.rows.length > 0) {
                 for(let x = 0; x < res.rows.length; x++){
                     const userId = res.rows[x].userid
