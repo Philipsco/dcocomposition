@@ -22,6 +22,7 @@ const main = () => {
   sysoBot.getEathquake()
   sysoBot.sendInfoGempaAuto()
   sysoBot.getGeneratePantun()
+  sysoBot.getGrup()
 }
 
 main()
