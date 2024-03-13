@@ -15,14 +15,12 @@ const main = () => {
   sysoBot.getQuotes()
   sysoBot.getHelp()
   sysoBot.getGenerate()
-  sysoBot.getDate()
   sysoBot.insertDatabase()
   sysoBot.deleteDatabase()
   sysoBot.updateDatabase()
   sysoBot.getEathquake()
   sysoBot.sendInfoGempaAuto()
   sysoBot.getGeneratePantun()
-  sysoBot.getGrup()
 }
 
 main()

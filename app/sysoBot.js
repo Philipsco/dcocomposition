@@ -91,26 +91,29 @@ class SysoBot extends TelegramBot {
         let numberSelected = 0
         setInterval(async () => {
             const bmkg = bmkg_endpoint+'autogempa.json'
-            const res = await db.query("SELECT * FROM dataUserIDs")
-            if (res.rows.length > 0) {
-                for(let x = 0; x < res.rows.length; x++){
-                    const userId = res.rows[x].userid
+            const res = await db.query("SELECT userid FROM dataUserIDs")
+            const count = res.rowCount
+            let data = res.rows
+            if (count > 0) {
+                const api = await fetch(bmkg)
+                const response = await api.json()
+                const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
+                const image = `${bmkg_endpoint}${Shakemap}`
+                for(let x = 0; x < count; x++){
+                    let userId = data[x].userid
                     try {
-                        const api = await fetch(bmkg)
-                        const response = await api.json()
-                        const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-                        const image = `${bmkg_endpoint}${Shakemap}`
-                        if (dumpGempa===Tanggal) {
-                            numberSelected++
-                        } else{
-                            dumpGempa = Tanggal
+                        if (dumpGempa===undefined) {
+                            console.log(dumpGempa===undefined)
                             const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
                             this.sendPhoto(userId, image, { caption: result })
+                        } else{
+                            numberSelected++
                         }
                     } catch (e) {
                         this.sendMessage(userId, failedText)
                     }
                 }
+                dumpGempa = Tanggal
             } else {
                 clearInterval(duration)
             }
@@ -208,16 +211,24 @@ class SysoBot extends TelegramBot {
                 this.sendMessage(data.from.id, "Masukkan data sakit,izin dan cuti")
             })
 
-            setTimeout(async () => {
-                if(dataCuti != undefined && dataIzin != undefined && dataSakit != undefined && dataGenerate[0] != undefined){
-                    this.sendMessage(dumpUser, `Dear All\n\nBerikut #KomposisiGroup${dataGenerate[0]} Shift ${dataGenerate[1]} pada ${today} :${await this.getGrup()}`)
+            setInterval(async() => {
+                if(dataCuti != undefined && dataIzin != undefined && dataSakit != undefined && dataGenerate[0] != undefined && dataGenerate[1] != undefined){
+                    this.sendMessage(dumpUser, `Dear All\nBerikut #KomposisiGroup${dataGenerate[0]} Shift ${dataGenerate[1]} pada ${today} :${await this.getGrup(dataSakit,dataIzin,dataCuti)}\n\nBest Regards,\nGroup ${dataGenerate[0]}`)
+                    dataGenerate.splice(0,dataGenerate.length)
+                    dataCuti.splice(0,dataCuti.length)
+                    dataIzin.splice(0,dataIzin.length)
+                    dataSakit.splice(0,dataSakit.length)
                 }
-            }, 1*10*1000);
+            }, 1*30*1000)
             
       } catch (error) {
           console.log(error)
           this.sendMessage(data.from.id,failedText)
           this.sendMessage(936687738,`${e} dengan command /generate`)
+          dataGenerate.splice(0,dataGenerate.length)
+          dataCuti.splice(0,dataCuti.length)
+          dataIzin.splice(0,dataIzin.length)
+          dataSakit.splice(0,dataSakit.length)
       }
     }
 
@@ -251,11 +262,6 @@ class SysoBot extends TelegramBot {
                 this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
               }
         })
-    }
-
-    async getDate() {
-        let dateNow = await db.query('SELECT * FROM dataKaryawan')
-        // console.log(dateNow.rows) // <---  the result of running query
     }
 
     async getInisial(inisial){
@@ -309,7 +315,7 @@ class SysoBot extends TelegramBot {
         })
     }
 
-    async getGrup(){
+    async getGrup(sakit,izin,cuti){
         let mbcasyso =[]
         let mbcadcmon = []
         let mbcasl = []
@@ -328,7 +334,8 @@ class SysoBot extends TelegramBot {
         let gacdcmon = []
         let gacsoc = []
         let grup = dataGenerate[0]
-        const resgrup = await db.query("SELECT inisial,role,leader,sites FROM dataKaryawan WHERE grup=$1", [grup])
+        const resgrup = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND NOT(inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4))", [grup, sakit,izin,cuti])
+        const resKeterangan = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND (inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4))", [grup, sakit,izin,cuti])
         try {
             for(let x=0; x<resgrup.rows.length; x++){
                 let pushData = resgrup.rows[x].inisial
@@ -419,16 +426,20 @@ class SysoBot extends TelegramBot {
 
             let format =`
 #MBCA
-Hadir :${mbcasl}, Syso [${mbcasyso}], DCMon [${mbcadcmon}], SOC [${mbcasoc}]
+Hadir : ${mbcasl}, Syso [${mbcasyso}], DCMon [${mbcadcmon}], SOC [${mbcasoc}]
+Tidak Hadir : 
 
 #WSA2
-Hadir :${wsasl}, Syso [${wsasyso}], DCMon [${wsadcmon}], SOC [${wsasoc}]
+Hadir : ${wsasl}, Syso [${wsasyso}], DCMon [${wsadcmon}], SOC [${wsasoc}]
+Tidak Hadir :
 
 #GAS
-Hadir :${gassl}, Syso [${gassyso}], DCMon [${gasdcmon}], SOC [${gassoc}]
+Hadir : ${gassl}, Syso [${gassyso}], DCMon [${gasdcmon}], SOC [${gassoc}]
+Tidak Hadir :
 
 #GAC
-Hadir :${gacsl}, FOC [${gacfoc}]
+Hadir : ${gacsl}, FOC [${gacfoc}]
+Tidak Hadir : 
 `
         return format
         } catch (error) {
@@ -436,6 +447,7 @@ Hadir :${gacsl}, FOC [${gacfoc}]
         }
 
     }
+    
 }
 
 module.exports = SysoBot;
