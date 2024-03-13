@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const commands = require("../config/cmd.js")
-const {groupBCA, shiftTime, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD, failedText, dataRandom} = require("../config/constant.js");
+const {groupBCA, shiftTime, panduanText, greetText, hadirText, failedText, dataRandom, formatData} = require("../config/constant.js");
 const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
 const today = checkTime()
@@ -16,7 +16,6 @@ class SysoBot extends TelegramBot {
     async checkAndInsertDbUserId(userId, name){
         try {
             const res = await db.query("SELECT * FROM dataUserIDs WHERE userId=$1",[userId])
-            console.log(res.rows)
             if(res.rows[0]=== undefined) {
                 const resp = db.query("INSERT INTO dataUserIDs (userId, userName) VALUES ($1, $2)", [userId, name])
                 return false
@@ -40,14 +39,13 @@ class SysoBot extends TelegramBot {
     getQuotes() {
         this.onText(commands.quote, async (data) => {
             this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
-          const quoteEndpoint = "https://api.kanye.rest/";
+          const quoteEndpoint = "https://api.kanye.rest/"
           try {
-            const apiCall = await fetch(quoteEndpoint);
-            const { quote } = await apiCall.json();
+            const apiCall = await fetch(quoteEndpoint)
+            const { quote } = await apiCall.json()
     
-            this.sendMessage(data.from.id, `${today}\nQuotes kamu pada hari ini adalah\n\n${quote}`);
+            this.sendMessage(data.from.id, `${today}\nQuotes kamu pada hari ini adalah\n\n${quote}`)
           } catch (e) {
-            console.error(err);
             this.sendMessage(data.from.id, failedText)
             this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
           }
@@ -115,9 +113,14 @@ class SysoBot extends TelegramBot {
         }, duration)
     }
 
-    async getGenerate() {
+    getGenerate() {
         let dataSakit,dataIzin,dataCuti
-        let dumpUser = 123
+        const removeDataAfterGenerate =() => {
+            dataGenerate.splice(0,dataGenerate.length)
+            dataCuti.splice(0,dataCuti.length)
+            dataIzin.splice(0,dataIzin.length)
+            dataSakit.splice(0,dataSakit.length)
+        }
       try {
           this.onText(commands.generate, (data) => {
             this.sendMessage(data.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
@@ -125,7 +128,6 @@ class SysoBot extends TelegramBot {
                       inline_keyboard: groupBCA
                   }
               })
-            dumpUser = data.from.id
           })
 
           this.on("callback_query", callback => {
@@ -135,102 +137,67 @@ class SysoBot extends TelegramBot {
 
             this.onText(commands.shiftOne, data => {
                 dataGenerate.push(1)
-                this.sendMessage(data.from.id, hadirText) 
-                console.log(dataGenerate)
+                this.sendMessage(data.from.id, hadirText)
             })
 
             this.onText(commands.shiftTwo, data => {
                 dataGenerate.push(2)
-                this.sendMessage(data.from.id, hadirText) 
-                console.log(dataGenerate)
+                this.sendMessage(data.from.id, hadirText)
             })
 
             this.onText(commands.shiftThree, data => {
                 dataGenerate.push(3)
-                this.sendMessage(data.from.id, hadirText) 
-                console.log(dataGenerate)
+                this.sendMessage(data.from.id, hadirText)
             })
 
             this.onText(commands.sick, (data, after) => {
                 dataSakit = after[1].toUpperCase()
                 const [...sakit] = dataSakit.split(",")
                 dataSakit = sakit
-                this.sendMessage(data.from.id, `data sakit inisial ${dataSakit} berhasil ditambahkan`)
-                this.sendMessage(data.from.id, `Silahkan masukkan inisial yang sedang cuti jika tidak ada dapat mencantumkan - \n\nContoh cuti pbk atau cuti -\n\nFormat : cuti <INISIAL>`)
+                this.sendMessage(data.from.id, `data sakit inisial ${dataSakit} berhasil ditambahkan`).then(() => {
+                    this.sendMessage(data.from.id, `Silahkan masukkan inisial yang sedang cuti jika tidak ada dapat mencantumkan - \nContoh : cuti pbk,gng atau cuti -\nFormat : cuti [inisial]`)
+                })
             })
     
             this.onText(commands.izin, (data, after) => {
                 dataIzin = after[1].toUpperCase()
                 const [...izin] = dataIzin.split(",")
                 dataIzin = izin
-                this.sendMessage(data.from.id, `data izin inisial ${dataIzin} berhasil ditambahkan`)
-                this.sendMessage(data.from.id, `Processing Data....`)
+                this.sendMessage(data.from.id, `data izin inisial ${dataIzin} berhasil ditambahkan`).then(() => {
+                    this.sendMessage(data.from.id, `Processing Data....`).then(async() => {
+                    this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${dataGenerate[0]} Shift ${dataGenerate[1]} pada ${today} :\n${await this.getGrup(dataSakit,dataIzin,dataCuti)}\nBest Regards,\nGroup ${dataGenerate[0]}`)
+                    removeDataAfterGenerate()
+                    })
+                })
             })
     
             this.onText(commands.onLeave, async (data, after) => {
                 dataCuti = after[1].toUpperCase()
                 const [...cuti] = dataCuti.split(",")
                 dataCuti = cuti
-                this.sendMessage(data.from.id, `data cuti inisial ${dataCuti} berhasil ditambahkan`)
-                this.sendMessage(data.from.id, `Silahkan masukkan inisial yang sedang izin jika tidak ada dapat mencantumkan - \n\nContoh izin pbk atau izin -\n\nFormat : izin <INISIAL>`)
+                this.sendMessage(data.from.id, `data cuti inisial ${dataCuti} berhasil ditambahkan`).then(() => {
+                    this.sendMessage(data.from.id, `Silahkan masukkan inisial yang sedang izin jika tidak ada dapat mencantumkan - \nContoh : izin pbk,alj atau izin -\nFormat : izin [inisial]`)
+                })
             })
 
-            this.onText(commands.fullTeam, data => {
+            this.onText(commands.fullTeam, async data => {
                 let grup = dataGenerate[0]
                 let shift = dataGenerate[1]
-                switch (grup) {
-                    case 'A':
-                        this.sendMessage(data.from.id, `${today}\nBerikut #KomposisiGroup${grup} Shift ${shift} :${fullTeamA}`)
-                        dataGenerate.splice(0,dataGenerate.length)
-                        console.log(dataGenerate)
-                        break
-                    case 'B':
-                        this.sendMessage(data.from.id, `Dear All, \n\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${checkTime()} :${fullTeamB}`) 
-                        dataGenerate.splice(0,dataGenerate.length)
-                        console.log(dataGenerate)
-                        break
-                    case 'C':
-                        this.sendMessage(data.from.id, `Dear All, \n\nBerikut Komposisi Personil #Group${grup} Shift ${shift} pada ${checkTime()} :${fullTeamC}`)
-                        dataGenerate.splice(0,dataGenerate.length)
-                        console.log(dataGenerate)
-                        break
-                    case 'D':
-                        this.sendMessage(data.from.id, `${today}\n Shift ${shift} #Grup${grup} :${fullTeamD}`)
-                        dataGenerate.splice(0,dataGenerate.length)
-                        break
-                    default:
-                        this.sendMessage(data.from.id, "System Error")
-                        dataGenerate.splice(0,dataGenerate.length)
-                        break
-                }
+                this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${today} :\n${await this.getGrup([],[],[])}\nBest Regards,\nGroup ${grup}`)
+                removeDataAfterGenerate()
             })
 
             this.onText(commands.halfTeam, async data => {
-                this.sendMessage(data.from.id, "Masukkan inisial yang sedang sakit jika tidak ada dapat mencantumkan - \n\nContoh sakit pbk atau sakit -\n\nFormat : sakit <INISIAL>")
+                this.sendMessage(data.from.id, "Masukkan inisial yang sedang sakit jika tidak ada dapat mencantumkan - \nContoh : sakit pbk,fkh atau sakit -\nFormat : sakit [inisial]")
             })
-
-            setInterval(async() => {
-                if(dataCuti != undefined && dataIzin != undefined && dataSakit != undefined && dataGenerate[0] != undefined && dataGenerate[1] != undefined){
-                    this.sendMessage(dumpUser, `Dear All\nBerikut #KomposisiGroup${dataGenerate[0]} Shift ${dataGenerate[1]} pada ${today} :\n${await this.getGrup(dataSakit,dataIzin,dataCuti)}\nBest Regards,\nGroup ${dataGenerate[0]}`)
-                    dataGenerate.splice(0,dataGenerate.length)
-                    dataCuti.splice(0,dataCuti.length)
-                    dataIzin.splice(0,dataIzin.length)
-                    dataSakit.splice(0,dataSakit.length)
-                }
-            }, 1*30*1000)
-            
       } catch (error) {
-          console.log(error)
           this.sendMessage(data.from.id,failedText)
           this.sendMessage(936687738,`${error} dengan command /generate`)
-          dataGenerate.splice(0,dataGenerate.length)
-          dataCuti.splice(0,dataCuti.length)
-          dataIzin.splice(0,dataIzin.length)
-          dataSakit.splice(0,dataSakit.length)
+          removeDataAfterGenerate()
       }
     }
 
-    async getGeneratePantun(){
+    getGeneratePantun(){
         this.onText(commands.generatePantun, async (data) => {
             const pantunEndpoint = "https://rima.rfnaj.id/api/v1/pantun/karmina"
             let x = Math.floor(Math.random() * (dataRandom.length));
@@ -250,12 +217,10 @@ class SysoBot extends TelegramBot {
                 })
 
                 apiCall.json().then(saa => {
-                    console.log(saa)
                     this.sendMessage(data.from.id, `${today}\nPantun kamu pada hari ini adalah\n\n${saa.sampiran}\n${saa.isi}`)
                 })
                 
               } catch (e) {
-                console.error(e);
                 this.sendMessage(data.from.id, failedText)
                 this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
               }
@@ -269,19 +234,18 @@ class SysoBot extends TelegramBot {
 
     insertDatabase() {
         this.onText(commands.insertDb, data => {
-            this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\n\n[inisial],[grup],[role],[site]\n\nContoh : \nPBK,A,DCMon,MBCA")
+            this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\n\nadd [inisial],[grup],[role],[site]\n\nContoh : \nPBK,A,DCMon,MBCA")
         })
 
         this.onText(commands.insert, async (data, after) => {
-            const [inisial, grup, role, sites] = after[1].split(",")
+            const [inisial, grup, role, sites] = after[1].toUpperCase().split(",")
             const leader = true  
             const checkInisial = await this.getInisial(inisial)
             try {
                 if (checkInisial === true) {
                     this.sendMessage(data.from.id, `inisial ${inisial} sudah ada pada database kami`)
                 } else {
-                    const res = await db.query("INSERT INTO dataKaryawan (inisial, grup, role, leader, sites) VALUES ($1, $2,$3,$4, $5)", [inisial, grup, role, leader, sites])
-                    console.log(res)
+                    await db.query("INSERT INTO dataKaryawan (inisial, grup, role, leader, sites) VALUES ($1, $2,$3,$4, $5)", [inisial, grup, role, leader, sites])
                     this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
                 } 
             } catch (error) {
@@ -290,19 +254,19 @@ class SysoBot extends TelegramBot {
         })
     }
 
-    async updateDatabase(){
-        await this.onText(commands.updateDb, data => {
+    updateDatabase(){
+        this.onText(commands.updateDb, data => {
             this.sendMessage(data.from.id, "Silahkan masukan data yang ingin di update dengan format sebagai berikut.\n\n[inisial],[grup],[role],[site]\n\nContoh : \nPBK,A,DCMon,MBCA")
         })
     }
 
-    async deleteDatabase(){
+    deleteDatabase(){
         this.onText(commands.deleteDb, async data => {
-            this.sendMessage(data.from.id, "Silahkan masukan inisial yang ingin di hapus")
+            this.sendMessage(data.from.id, "Silahkan masukan inisial yang ingin di hapus\nContoh : delete pbk\nFormat: delete <INISIAL>")
         })
 
-        await this.onText(commands.delete, async (data, after) => {
-            const inisial = after[1]
+        this.onText(commands.delete, async (data, after) => {
+            const inisial = after[1].toUpperCase()
             const checkInisial = await this.getInisial(inisial)
             if (checkInisial === true) {
                 db.query("DELETE FROM dataKaryawan WHERE inisial=$1",[inisial])
@@ -314,38 +278,23 @@ class SysoBot extends TelegramBot {
     }
 
     async getGrup(sakit,izin,cuti){
-        let mbcasyso =[]
-        let mbcadcmon = []
-        let mbcasl = []
-        let mbcasoc = []
-        let wsasyso =[]
-        let wsadcmon = []
-        let wsasl = []
-        let wsasoc = []
-        let gassyso =[]
-        let gasdcmon = []
-        let gassl = []
-        let gassoc = []
-        let gacfoc =[]
-        let gacsl = []
-        let gacsyso = []
-        let gacdcmon = []
-        let gacsoc = []
-        let mbcaizin =[]
-        let mbcasakit =[]
-        let mbcacuti =[]
-        let wsaizin =[]
-        let wsasakit =[]
-        let wsacuti =[]
-        let gascuti =[]
-        let gasizin =[]
-        let gassakit =[]
-        let gacizin =[]
-        let gacsakit =[]
-        let gaccuti =[]
+        let mbcasyso =[];let mbcadcmon = [];let mbcasl = [];let mbcasoc = [];let mbcaizin =[];let mbcasakit =[];let mbcacuti =[];
+        let wsasyso =[];let wsadcmon = [];let wsasl = [];let wsasoc = [];let wsaizin =[];let wsasakit =[];let wsacuti =[];
+        let gassyso =[];let gasdcmon = [];let gassl = [];let gassoc = [];let gascuti =[];let gasizin =[];let gassakit =[];
+        let gacfoc =[];let gacsl = [];let gacsyso = [];let gacdcmon = [];let gacsoc = [];let gacizin =[];let gacsakit =[];let gaccuti =[];
         let grup = dataGenerate[0]
         const resgrup = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND NOT(inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4))", [grup, sakit,izin,cuti])
         const resKeterangan = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND (inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4))", [grup, sakit,izin,cuti])
+        const defaultValue = (arr) => {
+            if (arr.length === 0) {
+                arr.push("-")
+            }
+        }
+        const defaultValueSL = (arr) => {
+            if (arr.length === 0) {
+                arr.push("- (SL)")
+            }
+        }
         try {
             for(let x=0; x<resgrup.rows.length; x++){
                 let pushData = resgrup.rows[x].inisial
@@ -355,7 +304,7 @@ class SysoBot extends TelegramBot {
                             case 'SYSO':
                                 resgrup.rows[x].leader === true ? mbcasyso.push(pushData+ ` (TL)`): mbcasyso.push(pushData)
                                 break;
-                            case 'DCMon':
+                            case 'DCMON':
                                 resgrup.rows[x].leader === true ? mbcadcmon.push(pushData+ ` (TL)`): mbcadcmon.push(pushData)
                                 break;
                             case 'SL':
@@ -368,13 +317,12 @@ class SysoBot extends TelegramBot {
                                 break;
                         }
                         break;
-    
                     case 'WSA2':
                         switch (resgrup.rows[x].role) {
                             case 'SYSO':
                                 resgrup.rows[x].leader === true ? wsasyso.push(pushData+ ` (TL)`): wsasyso.push(pushData)
                                 break;
-                            case 'DCMon':
+                            case 'DCMON':
                                 resgrup.rows[x].leader === true ? wsadcmon.push(pushData+ ` (TL)`): wsadcmon.push(pushData)
                                 break;
                             case 'SL':
@@ -387,13 +335,12 @@ class SysoBot extends TelegramBot {
                                 break;
                         }
                         break;
-    
                     case 'GAS':
                         switch (resgrup.rows[x].role) {
                             case 'SYSO':
                                 resgrup.rows[x].leader === true ? gassyso.push(pushData+ ` (TL)`): gassyso.push(pushData)
                                 break;
-                            case 'DCMon':
+                            case 'DCMON':
                                 resgrup.rows[x].leader === true ? gasdcmon.push(pushData+ ` (TL)`): gasdcmon.push(pushData)
                                 break;
                             case 'SL':
@@ -406,13 +353,12 @@ class SysoBot extends TelegramBot {
                                 break;
                         }
                         break;
-    
                     case 'GAC':
                         switch (resgrup.rows[x].role) {
                             case 'SYSO':
                                 resgrup.rows[x].leader === true ? gacsyso.push(pushData+ ` (TL)`): gacsyso.push(pushData)
                                 break;
-                            case 'DCMon':
+                            case 'DCMON':
                                 resgrup.rows[x].leader === true ? gacdcmon.push(pushData+ ` (TL)`): gacdcmon.push(pushData)
                                 break;
                             case 'SL':
@@ -428,7 +374,6 @@ class SysoBot extends TelegramBot {
                                 break;
                         }
                         break;
-                
                     default:
                         break;
                 }
@@ -483,75 +428,28 @@ class SysoBot extends TelegramBot {
                 }
             }
 
-            if(mbcasl.length===0){
-                mbcasl.push("- (SL)")
-            }
-            if( wsasl.length===0){
-                wsasl.push("- (SL)")
-            }
-            if(gassl.length===0){
-                gassl.push("- (SL)")
-            }
-            if(gacsl.length===0){
-                gacsl.push("- (SL)")
-            }
+            defaultValueSL(mbcasl)
+            defaultValueSL(wsasl)
+            defaultValueSL(gassl)
+            defaultValueSL(gacsl)
+            defaultValue(mbcasakit)
+            defaultValue(mbcacuti)
+            defaultValue(mbcaizin)
+            defaultValue(wsacuti)
+            defaultValue(wsaizin)
+            defaultValue(wsasakit)
+            defaultValue(gascuti)
+            defaultValue(gasizin)
+            defaultValue(gassakit)
+            defaultValue(gaccuti)
+            defaultValue(gacizin)
+            defaultValue(gacsakit)
 
-            if(mbcasakit.length===0){
-                mbcasakit.push("-")
-            }
-            if(mbcacuti.length===0){
-                mbcacuti.push("-")
-            }
-            if(mbcaizin.length===0){
-                mbcaizin.push("-")
-            }
-            if(wsacuti.length===0){
-                wsacuti.push("-")
-            }
-            if(wsaizin.length===0){
-                wsaizin.push("-")
-            }
-            if(wsasakit.length===0){
-                wsasakit.push("-")
-            }
-            if(gascuti.length===0){
-                gascuti.push("-")
-            }
-            if(gasizin.length===0){
-                gasizin.push("-")
-            }
-            if(gassakit.length===0){
-                gassakit.push("-")
-            }
-            if(gaccuti.length===0){
-                gaccuti.push("-")
-            }
-            if(gacizin.length===0){
-                gacizin.push("-")
-            }
-            if(gacsakit.length===0){
-                gacsakit.push("-")
-            }
-
-            let format =`
-#MBCA
-Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], DCMon [ ${mbcadcmon} ], SOC [ ${mbcasoc} ]
-Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ]
-_____________________
-#WSA2
-Hadir : ${wsasl}, Syso [ ${wsasyso} ], DCMon [ ${wsadcmon} ], SOC [ ${wsasoc} ]
-Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ]
-_____________________
-#GAS
-Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
-Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ]
-_____________________
-#GAC
-Hadir : ${gacsl}, FOC [ ${gacfoc} ]
-Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ]
-_____________________
-`
-        return format
+            let data = formatData(mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,
+                wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,
+                gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,
+                gacsl,gacfoc,gacsakit,gaccuti,gacizin)
+            return data
         } catch (error) {
             this.sendMessage(936687738,`${error} pada saat generate getGroup()`)
         }

@@ -2,7 +2,6 @@ const CMD_A = "A";
 const CMD_B = "B";
 const CMD_C = "C";
 const CMD_D = "D";
-const invalidCommand = "Mohon maaf command tidak tersedia! 🙏"
 const failedText = "Gagal memuat data yang diminta, silahkan coba lagi atau hubungi PBK😢"
 
 const dataRandom = [
@@ -91,77 +90,27 @@ Apakah member grup masuk semua??
 
 Terimakasih
 `
-const fullTeamA = `
-______________________
+
+const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin)=>{
+  let format = `
+#MBCA
+Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], DCMon [ ${mbcadcmon} ], SOC [ ${mbcasoc} ]
+Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ]
+_____________________
 #WSA2
-Hadir : RAN (SL), SysO [RZP (TL), YRA, ARR], SOC [NDA], FM [Dede], DCMon [BAL (TL), ASN,ABA]
-______________________
-#MBCA
-Hadir : NHU (SL), Syso [AMN (TL), SON, WYG], SOC [WAR], DCMon [DCW (TL), FKH, PBK]
-______________________
+Hadir : ${wsasl}, Syso [ ${wsasyso} ], DCMon [ ${wsadcmon} ], SOC [ ${wsasoc} ]
+Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ]
+_____________________
 #GAS
-Hadir : ASY (SL), SysO [EKA (TL), FIK, CHF], DCMon [RNA (TL), GNG, ALJ]
-______________________
+Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
+Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ]
+_____________________
 #GAC
-Hadir : APA (SL), FOC [ADN, MRW]
-______________________
+Hadir : ${gacsl}, FOC [ ${gacfoc} ]
+Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ]
+_____________________
 `
-const fullTeamC = `
-#WSA                                                                                                
-Hadir : RID (SL), BDW (TL), HRZ & ALM (Syso), KRM (TL DCMon), MSH & FPH (DCMon), Bagus(FM)
-Tidak Hadir :  -
+  return format
+}
 
-#MBCA
-Hadir : VNT (SL), EMO (TL Syso), TCH & SCH (Syso), RBI (TL DCmon), MAB (DCMon), MUI (SOC)
-Tidak Hadir : -
-
-#GAS
-Hadir :  IPA (SL), JVR (TL syso), KRI & DVP (Syso), AWL (TL DCMon), MIW & LCW (DCMon), LAL (SOC)
-Tidak Hadir :  - 
-
-#GAC
-Hadir : JFR (SOC), Baharuddin & MAO (PMX/FOC)
-Tidak Hadir : -
-
-----------------------------------------------------------------------------------
-Terima kasih,
-Grup C
-`
-const fullTeamB = `
-#MBCA    
-WFO : GAA (SL), LHN (TL SYSO), NBK (SYSO), MRB (SOC), GOS (SYSO), CAD (TL DCMON), DPN+ICS (DCMON) 
-Tidak Hadir: -
- 
-#WSA    
-WFO :  DFM (SL), WYN (TL-SYSO), ARV (SYSO), ZOE (TL DCMON), RZM+DAL (DCMON), TYO (SOC), Agus (FM) 
-Tidak Hadir : - 
- 
-#GRHA    
-WFO : ARM (SL), NUG (TL-SYSO), AXL+MWS (SYSO), YRS (TL DCMON), NFL+ESI (DCMON), YMH (SOC)     
-Tidak Hadir :  - 
- 
-#GAC    
-WFO : TSR+SUT (SOC), DWN (FOC) + Firman (PMX / FOC) 
-Tidak Hadir : -     
- 
-Terima kasih
-`
-const fullTeamD = `
-*WSA2                                                                                                       
-Hadir: HAN (SL), RIF (TL-SysO), DND & BMP (SysO), IVM (TL-DCMon), RKS & FKR (DCMon), AGE (SOC) 
-Tidak Hadir: -
-                                                                                                  
-*MBCA                                                                                                       
-Hadir: AGF (SL), MRF (TL-SysO), SNH (Syso), DKY (Syso), KDV (TL-DCMon), RHH (DCMon), BOR (DCMon) , FTY (SOC) 
-Tidak Hadir: -
-                                                                                                  
-*GAS                                                                                                    
-Hadir: SAW (SL), HKT (TL-SysO), RRD & IPO (SysO), AFH (TL-DCMon), KIN & DBS (DCMon), BAY (SOC) 
-Tidak Hadir: -  
-  
-*GAC   
-Hadir: ABR (SL/SOC), DRH (FOC),Dimas (PMX) 
-Tidak Hadir: - 
----------------------------------------------------------------------------------------------------`
-
-module.exports = {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD, failedText, dataRandom}
+module.exports = {groupBCA, shiftTime, panduanText, greetText, hadirText, failedText, dataRandom,formatData}
