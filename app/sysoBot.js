@@ -1,12 +1,12 @@
 const TelegramBot = require('node-telegram-bot-api');
 const commands = require("../config/cmd.js")
-const {groupBCA, shiftTime, invalidCommand, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD, failedText, dataRandom} = require("../config/constant.js");
+const {groupBCA, shiftTime, panduanText, greetText, hadirText, fullTeamA, fullTeamB, fullTeamC, fullTeamD, failedText, dataRandom} = require("../config/constant.js");
 const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
 const today = checkTime()
 const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/'
 let dataGenerate =[]
-let dumpGempa
+let dumpGempaDate, dumpGempaTime
 class SysoBot extends TelegramBot {
     constructor(token, options) {
         super(token, options);
@@ -72,13 +72,8 @@ class SysoBot extends TelegramBot {
                 const response = await api.json()
                 const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
                 const image = `${bmkg_endpoint}${Shakemap}`
-                if (dumpGempa===Tanggal) {
-                    this.sendMessage(data.from.id,"Info Gempa masih sama")
-                } else {
-                    dumpGempa = Tanggal
-                    const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
-                    this.sendPhoto(id, image, { caption: result })
-                }
+                const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
+                this.sendPhoto(id, image, { caption: result })
             } catch (e) {
                 this.sendMessage(data.from.id, failedText)
                 this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
@@ -102,8 +97,7 @@ class SysoBot extends TelegramBot {
                 for(let x = 0; x < count; x++){
                     let userId = data[x].userid
                     try {
-                        if (dumpGempa===undefined) {
-                            console.log(dumpGempa===undefined)
+                        if (dumpGempaDate !== Tanggal && dumpGempaTime !== Jam) {
                             const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
                             this.sendPhoto(userId, image, { caption: result })
                         } else{
@@ -113,7 +107,8 @@ class SysoBot extends TelegramBot {
                         this.sendMessage(userId, failedText)
                     }
                 }
-                dumpGempa = Tanggal
+                dumpGempaDate = Tanggal
+                dumpGempaTime = Jam
             } else {
                 clearInterval(duration)
             }
@@ -161,6 +156,7 @@ class SysoBot extends TelegramBot {
                 const [...sakit] = dataSakit.split(",")
                 dataSakit = sakit
                 this.sendMessage(data.from.id, `data sakit inisial ${dataSakit} berhasil ditambahkan`)
+                this.sendMessage(data.from.id, `Silahkan masukkan inisial yang sedang cuti jika tidak ada dapat mencantumkan - \n\nContoh cuti pbk atau cuti -\n\nFormat : cuti <INISIAL>`)
             })
     
             this.onText(commands.izin, (data, after) => {
@@ -168,6 +164,7 @@ class SysoBot extends TelegramBot {
                 const [...izin] = dataIzin.split(",")
                 dataIzin = izin
                 this.sendMessage(data.from.id, `data izin inisial ${dataIzin} berhasil ditambahkan`)
+                this.sendMessage(data.from.id, `Processing Data....`)
             })
     
             this.onText(commands.onLeave, async (data, after) => {
@@ -175,6 +172,7 @@ class SysoBot extends TelegramBot {
                 const [...cuti] = dataCuti.split(",")
                 dataCuti = cuti
                 this.sendMessage(data.from.id, `data cuti inisial ${dataCuti} berhasil ditambahkan`)
+                this.sendMessage(data.from.id, `Silahkan masukkan inisial yang sedang izin jika tidak ada dapat mencantumkan - \n\nContoh izin pbk atau izin -\n\nFormat : izin <INISIAL>`)
             })
 
             this.onText(commands.fullTeam, data => {
@@ -208,12 +206,12 @@ class SysoBot extends TelegramBot {
             })
 
             this.onText(commands.halfTeam, async data => {
-                this.sendMessage(data.from.id, "Masukkan data sakit,izin dan cuti")
+                this.sendMessage(data.from.id, "Masukkan inisial yang sedang sakit jika tidak ada dapat mencantumkan - \n\nContoh sakit pbk atau sakit -\n\nFormat : sakit <INISIAL>")
             })
 
             setInterval(async() => {
                 if(dataCuti != undefined && dataIzin != undefined && dataSakit != undefined && dataGenerate[0] != undefined && dataGenerate[1] != undefined){
-                    this.sendMessage(dumpUser, `Dear All\nBerikut #KomposisiGroup${dataGenerate[0]} Shift ${dataGenerate[1]} pada ${today} :${await this.getGrup(dataSakit,dataIzin,dataCuti)}\n\nBest Regards,\nGroup ${dataGenerate[0]}`)
+                    this.sendMessage(dumpUser, `Dear All\nBerikut #KomposisiGroup${dataGenerate[0]} Shift ${dataGenerate[1]} pada ${today} :\n${await this.getGrup(dataSakit,dataIzin,dataCuti)}\nBest Regards,\nGroup ${dataGenerate[0]}`)
                     dataGenerate.splice(0,dataGenerate.length)
                     dataCuti.splice(0,dataCuti.length)
                     dataIzin.splice(0,dataIzin.length)
@@ -224,7 +222,7 @@ class SysoBot extends TelegramBot {
       } catch (error) {
           console.log(error)
           this.sendMessage(data.from.id,failedText)
-          this.sendMessage(936687738,`${e} dengan command /generate`)
+          this.sendMessage(936687738,`${error} dengan command /generate`)
           dataGenerate.splice(0,dataGenerate.length)
           dataCuti.splice(0,dataCuti.length)
           dataIzin.splice(0,dataIzin.length)
@@ -333,6 +331,18 @@ class SysoBot extends TelegramBot {
         let gacsyso = []
         let gacdcmon = []
         let gacsoc = []
+        let mbcaizin =[]
+        let mbcasakit =[]
+        let mbcacuti =[]
+        let wsaizin =[]
+        let wsasakit =[]
+        let wsacuti =[]
+        let gascuti =[]
+        let gasizin =[]
+        let gassakit =[]
+        let gacizin =[]
+        let gacsakit =[]
+        let gaccuti =[]
         let grup = dataGenerate[0]
         const resgrup = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND NOT(inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4))", [grup, sakit,izin,cuti])
         const resKeterangan = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND (inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4))", [grup, sakit,izin,cuti])
@@ -423,31 +433,129 @@ class SysoBot extends TelegramBot {
                         break;
                 }
             }
+            for(let y=0; y<resKeterangan.rows.length; y++){
+                let pushData = resKeterangan.rows[y].inisial
+                switch(resKeterangan.rows[y].sites){
+                    case 'MBCA':
+                        if(sakit.includes(pushData)){
+                            mbcasakit.push(pushData)
+                        }
+                        if(cuti.includes(pushData)){
+                            mbcacuti.push(pushData)
+                        }
+                        if(izin.includes(pushData)){
+                            mbcaizin.push(pushData)
+                        }
+                        break
+                    case 'WSA2':
+                        if(sakit.includes(pushData)){
+                            wsasakit.push(pushData)
+                        }
+                        if(cuti.includes(pushData)){
+                            wsacuti.push(pushData)
+                        }
+                        if(izin.includes(pushData)){
+                            wsaizin.push(pushData)
+                        }
+                        break
+                    case 'GAS':
+                        if(sakit.includes(pushData)){
+                            gassakit.push(pushData)
+                        }
+                        if(cuti.includes(pushData)){
+                            gascuti.push(pushData)
+                        }
+                        if(izin.includes(pushData)){
+                            gasizin.push(pushData)
+                        }
+                        break
+                    case 'GAC':
+                        if(sakit.includes(pushData)){
+                            gacsakit.push(pushData)
+                        }
+                        if(cuti.includes(pushData)){
+                            gaccuti.push(pushData)
+                        }
+                        if(izin.includes(pushData)){
+                            gacizin.push(pushData)
+                        }
+                        break
+                }
+            }
+
+            if(mbcasl.length===0){
+                mbcasl.push("- (SL)")
+            }
+            if( wsasl.length===0){
+                wsasl.push("- (SL)")
+            }
+            if(gassl.length===0){
+                gassl.push("- (SL)")
+            }
+            if(gacsl.length===0){
+                gacsl.push("- (SL)")
+            }
+
+            if(mbcasakit.length===0){
+                mbcasakit.push("-")
+            }
+            if(mbcacuti.length===0){
+                mbcacuti.push("-")
+            }
+            if(mbcaizin.length===0){
+                mbcaizin.push("-")
+            }
+            if(wsacuti.length===0){
+                wsacuti.push("-")
+            }
+            if(wsaizin.length===0){
+                wsaizin.push("-")
+            }
+            if(wsasakit.length===0){
+                wsasakit.push("-")
+            }
+            if(gascuti.length===0){
+                gascuti.push("-")
+            }
+            if(gasizin.length===0){
+                gasizin.push("-")
+            }
+            if(gassakit.length===0){
+                gassakit.push("-")
+            }
+            if(gaccuti.length===0){
+                gaccuti.push("-")
+            }
+            if(gacizin.length===0){
+                gacizin.push("-")
+            }
+            if(gacsakit.length===0){
+                gacsakit.push("-")
+            }
 
             let format =`
 #MBCA
-Hadir : ${mbcasl}, Syso [${mbcasyso}], DCMon [${mbcadcmon}], SOC [${mbcasoc}]
-Tidak Hadir : 
-
+Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], DCMon [ ${mbcadcmon} ], SOC [ ${mbcasoc} ]
+Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ]
+_____________________
 #WSA2
-Hadir : ${wsasl}, Syso [${wsasyso}], DCMon [${wsadcmon}], SOC [${wsasoc}]
-Tidak Hadir :
-
+Hadir : ${wsasl}, Syso [ ${wsasyso} ], DCMon [ ${wsadcmon} ], SOC [ ${wsasoc} ]
+Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ]
+_____________________
 #GAS
-Hadir : ${gassl}, Syso [${gassyso}], DCMon [${gasdcmon}], SOC [${gassoc}]
-Tidak Hadir :
-
+Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
+Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ]
+_____________________
 #GAC
-Hadir : ${gacsl}, FOC [${gacfoc}]
-Tidak Hadir : 
+Hadir : ${gacsl}, FOC [ ${gacfoc} ]
+Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ]
+_____________________
 `
         return format
         } catch (error) {
             this.sendMessage(936687738,`${error} pada saat generate getGroup()`)
         }
-
     }
-    
 }
 
 module.exports = SysoBot;
