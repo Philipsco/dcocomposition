@@ -482,12 +482,12 @@ class SysoBot extends TelegramBot {
             defaultValueSL(wsasl)
             defaultValueSL(gassl)
             defaultValueSL(gacsl)
-            mbcadcmon = sortTL(mbcadcmon)
-            mbcasyso = sortTL(mbcasyso)
-            gasdcmon = sortTL(gasdcmon)
-            gassyso = sortTL(gassyso)
-            wsadcmon = sortTL(wsadcmon)
-            wsasyso = sortTL(wsasyso)
+            let mbcadcmonSorted = sortTL(mbcadcmon)
+            let mbcasysoSorted = sortTL(mbcasyso)
+            let gasdcmonSorted = sortTL(gasdcmon)
+            let gassysoSorted = sortTL(gassyso)
+            let wsadcmonSorted = sortTL(wsadcmon)
+            let wsasysoSorted = sortTL(wsasyso)
             defaultValue(mbcasakit)
             defaultValue(mbcacuti)
             defaultValue(mbcaizin)
@@ -501,9 +501,9 @@ class SysoBot extends TelegramBot {
             defaultValue(gacizin)
             defaultValue(gacsakit)
 
-            let data = formatData(mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,
-                wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,
-                gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,
+            let data = formatData(mbcasl,mbcasysoSorted,mbcadcmonSorted,mbcasoc,mbcasakit,mbcacuti,mbcaizin,
+                wsasl,wsasysoSorted,wsadcmonSorted,wsasoc,wsasakit,wsacuti,wsaizin,
+                gassl,gassysoSorted,gasdcmonSorted,gassoc,gassakit,gascuti,gasizin,
                 gacsl,gacfoc,gacsakit,gaccuti,gacizin)
             return data
         } catch (error) {
