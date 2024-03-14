@@ -114,7 +114,9 @@ class SysoBot extends TelegramBot {
     }
 
     getGenerate() {
-        let dataSakit,dataIzin,dataCuti
+        let dataSakit=[]
+        let dataIzin= []
+        let dataCuti=[]
       try {
           this.onText(commands.generate, (data) => {
             this.sendMessage(data.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
