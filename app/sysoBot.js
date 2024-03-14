@@ -160,10 +160,26 @@ class SysoBot extends TelegramBot {
                 this.sendMessage(data.from.id, `data izin inisial ${dataIzin} berhasil ditambahkan`).then(() => {
                     this.sendMessage(data.from.id, `Processing Data....`).then(async() => {
                     this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${dataGenerate[0]} Shift ${dataGenerate[1]} pada ${today} :\n${await this.getGrup(dataSakit,dataIzin,dataCuti)}\nBest Regards,\nGroup ${dataGenerate[0]}`)
-                    dataGenerate.splice(0,dataGenerate.length)
-                    dataCuti.splice(0,dataCuti.length)
-                    dataIzin.splice(0,dataIzin.length)
-                    dataSakit.splice(0,dataSakit.length)
+                    for(let x =0; len = dataGenerate.length, x<len; x++){
+                        dataGenerate.splice(x,1)
+                        len = dataGenerate.length
+                    }
+                    for(let x =0; len = dataCuti.length, x<len; x++){
+                        dataCuti.splice(x,1)
+                        len = dataCuti.length
+                    }
+                    for(let x =0; len = dataIzin.length, x<len; x++){
+                        dataIzin.splice(x,1)
+                        len = dataIzin.length
+                    }
+                    for(let x =0; len = dataSakit.length, x<len; x++){
+                        dataSakit.splice(x,1)
+                        len = dataSakit.length
+                    }
+                    // dataGenerate.splice(0,dataGenerate.length)
+                    // dataCuti.splice(0,dataCuti.length)
+                    // dataIzin.splice(0,dataIzin.length)
+                    // dataSakit.splice(0,dataSakit.length)
                     })
                 })
             })
@@ -181,10 +197,22 @@ class SysoBot extends TelegramBot {
                 let grup = dataGenerate[0]
                 let shift = dataGenerate[1]
                 this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${grup} Shift ${shift} pada ${today} :\n${await this.getGrup([],[],[])}\nBest Regards,\nGroup ${grup}`)
-                dataGenerate.splice(0,dataGenerate.length)
-                dataCuti.splice(0,dataCuti.length)
-                dataIzin.splice(0,dataIzin.length)
-                dataSakit.splice(0,dataSakit.length)
+                for(let x =0; len = dataGenerate.length, x<len; x++){
+                    dataGenerate.splice(x,1)
+                    len = dataGenerate.length
+                }
+                for(let x =0; len = dataCuti.length, x<len; x++){
+                    dataCuti.splice(x,1)
+                    len = dataCuti.length
+                }
+                for(let x =0; len = dataIzin.length, x<len; x++){
+                    dataIzin.splice(x,1)
+                    len = dataIzin.length
+                }
+                for(let x =0; len = dataSakit.length, x<len; x++){
+                    dataSakit.splice(x,1)
+                    len = dataSakit.length
+                }
             })
 
             this.onText(commands.halfTeam, async data => {
@@ -193,10 +221,22 @@ class SysoBot extends TelegramBot {
       } catch (error) {
         this.sendMessage(data.from.id,failedText)
         this.sendMessage(936687738,`${error} dengan command /generate`)
-        dataGenerate.splice(0,dataGenerate.length)
-        dataCuti.splice(0,dataCuti.length)
-        dataIzin.splice(0,dataIzin.length)
-        dataSakit.splice(0,dataSakit.length)
+        for(let x =0; len = dataGenerate.length, x<len; x++){
+            dataGenerate.splice(x,1)
+            len = dataGenerate.length
+        }
+        for(let x =0; len = dataCuti.length, x<len; x++){
+            dataCuti.splice(x,1)
+            len = dataCuti.length
+        }
+        for(let x =0; len = dataIzin.length, x<len; x++){
+            dataIzin.splice(x,1)
+            len = dataIzin.length
+        }
+        for(let x =0; len = dataSakit.length, x<len; x++){
+            dataSakit.splice(x,1)
+            len = dataSakit.length
+        }
       }
     }
 
