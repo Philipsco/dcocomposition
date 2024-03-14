@@ -336,6 +336,14 @@ class SysoBot extends TelegramBot {
                 arr.push("- (SL)")
             }
         }
+        const sortTL = (arr) => {
+            const lead = arr.indexOf("(TL)")
+            if (lead !== 0 && lead !== -1) {
+                const tlValue = arr[lead]
+                arr[lead] = arr[0]
+                arr[0] = tlValue
+            }
+        }
         try {
             for(let x=0; x<resgrup.rows.length; x++){
                 let pushData = resgrup.rows[x].inisial
@@ -473,6 +481,12 @@ class SysoBot extends TelegramBot {
             defaultValueSL(wsasl)
             defaultValueSL(gassl)
             defaultValueSL(gacsl)
+            sortTL(mbcadcmon)
+            sortTL(mbcasyso)
+            sortTL(gasdcmon)
+            sortTL(gassyso)
+            sortTL(wsadcmon)
+            sortTL(wsasyso)
             defaultValue(mbcasakit)
             defaultValue(mbcacuti)
             defaultValue(mbcaizin)
