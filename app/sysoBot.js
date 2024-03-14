@@ -337,11 +337,10 @@ class SysoBot extends TelegramBot {
             }
         }
         const sortTL = (arr) => {
-            const lead = arr.indexOf("(TL)")
+            const lead = arr.findIndex(item => item.includes("(TL)"))
             if (lead !== 0 && lead !== -1) {
-                const tlValue = arr[lead]
-                arr[lead] = arr[0]
-                arr[0] = tlValue
+                const tlValue = arr.splice(lead, 1)[0]
+                arr.unshift(tlValue)
             }
             return arr
         }
