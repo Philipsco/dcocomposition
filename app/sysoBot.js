@@ -290,7 +290,8 @@ class SysoBot extends TelegramBot {
                     this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
                 } 
             } catch (error) {
-                this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
+                this.sendMessage(data.from.id,`${error} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
+                this.sendMessage(936687738,`${error} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
             }  
         })
     }
