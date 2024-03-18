@@ -1,11 +1,12 @@
 const TelegramBot = require('node-telegram-bot-api');
 const commands = require("../config/cmd.js")
-const {groupBCA, shiftTime, panduanText, greetText, hadirText, failedText, dataRandom, formatData} = require("../config/constant.js");
+const {groupBCA, choices, shiftTime, shifting, fullTeamOrNot, panduanText, greetText, hadirText, failedText, dataRandom, formatData} = require("../config/constant.js");
 const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
 const today = checkTime()
 const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/'
 let dataGenerate =[]
+let komposisi
 class SysoBot extends TelegramBot {
 	constructor(token, options) {
 		super(token, options);
@@ -31,6 +32,7 @@ class SysoBot extends TelegramBot {
 		const index = dataGenerate.findIndex(x => x.requestor === id)
 		dataGenerate.splice(index,dataGenerate.length)
 	}
+
 	getGreeting() {
 		this.onText(commands.start, async (data) => {
 			await this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
@@ -141,41 +143,68 @@ class SysoBot extends TelegramBot {
 					dataGenerate.push(newReq)
 				}
 			})
-			this.on("callback_query", callback => {
+			this.on("callback_query", async callback => {
+				console.log(callback)
 				const index = dataGenerate.findIndex(obj => obj.requestor === callback.from.id)
-				if (index !== -1){
+				if (index !== -1 && dataGenerate[index].group === null){
 					dataGenerate[index].group = callback.data
-					this.sendMessage(callback.from.id, shiftTime)
-				} else {
+					this.editMessageText(`Kamu memilih Group ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
+					this.sendMessage(callback.from.id, shiftTime, {
+						reply_markup : {
+							inline_keyboard : shifting
+						}
+					})
+				} else if (callback.data === "true") {
+					this.sendMessage(-1001407032897, await komposisi)
+					this.editMessageText("Komposisi sudah di kirim ke Syso Community", {chat_id : callback.from.id, message_id: callback.message.message_id})
+					komposisi = null
+				} else if (callback.data === "false") {
+					this.editMessageText("Baik, Terimakasih untuk konfirmasi nya", {chat_id : callback.from.id, message_id: callback.message.message_id})
+					komposisi = null
+				}else if (callback.data === '1') {
+					dataGenerate[index].shift = 1
+					this.sendMessage(callback.from.id, hadirText, {
+						reply_markup : {
+							inline_keyboard : fullTeamOrNot
+						}
+					})
+					this.editMessageText(`Kamu memilih Shift ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
+				} else if (callback.data === '2') {
+					dataGenerate[index].shift = 2
+					this.sendMessage(callback.from.id, hadirText, {
+						reply_markup : {
+							inline_keyboard : fullTeamOrNot
+						}
+					})
+					this.editMessageText(`Kamu memilih Shift ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
+				}else if (callback.data === '3') {
+					dataGenerate[index].shift = 3
+					this.sendMessage(callback.from.id, hadirText, {
+						reply_markup : {
+							inline_keyboard : fullTeamOrNot
+						}
+					})
+					this.editMessageText(`Kamu memilih Shift ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
+				}else if (callback.data === "fullteam") {
+					const GROUP = await dataGenerate[index].group
+					const SHIFT = await dataGenerate[index].shift
+					const DETAIL = await this.getGrup(GROUP,[],[],[])
+					this.sendMessage(callback.from.id, `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${today} :\n${DETAIL}\nBest Regards,\nGroup ${GROUP}`).then(() => {
+					this.sendMessage(callback.from.id, "Mau di teruskan data yang sudah ter generate ke grup Syso Community ?", {
+						reply_markup : {
+							inline_keyboard : choices
+						}
+					})
+					this.editMessageText(`Kamu memilih ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
+				})
+				komposisi = `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${today} :\n${DETAIL}\nBest Regards,\nGroup ${GROUP}`
+				this.removeItemDataGenerate(callback.from.id)
+				} else if (callback.data === "halfteam") {
+					this.editMessageText(`Kamu memilih ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
+					this.sendMessage(callback.from.id, "Masukkan inisial yang sedang sakit jika tidak ada dapat mencantumkan - \nContoh : sakit pbk,fkh atau sakit -\nFormat : sakit [inisial]")
+				}else {
 					this.sendMessage(callback.from.id, failedText)
 					this.removeItemDataGenerate(callback.from.id)
-				}
-			})
-			this.onText(commands.shiftOne, data => {
-				const index = dataGenerate.findIndex(obj => obj.requestor === data.from.id)
-				if (index !== -1){
-					dataGenerate[index].shift = 1
-					this.sendMessage(data.from.id, hadirText)
-				} else {
-					this.sendMessage(data.from.id, failedText)
-				}
-			})
-			this.onText(commands.shiftTwo, data => {
-				const index = dataGenerate.findIndex(obj => obj.requestor === data.from.id)
-				if (index !== -1){
-					dataGenerate[index].shift = 2
-					this.sendMessage(data.from.id, hadirText)
-				} else {
-					this.sendMessage(data.from.id, failedText)
-				}
-			})
-			this.onText(commands.shiftThree, data => {
-				const index = dataGenerate.findIndex(obj => obj.requestor === data.from.id)
-				if (index !== -1){
-					dataGenerate[index].shift = 3
-					this.sendMessage(data.from.id, hadirText)
-				} else {
-					this.sendMessage(data.from.id, failedText)
 				}
 			})
 			this.onText(commands.sick, (data, after) => {
@@ -189,13 +218,25 @@ class SysoBot extends TelegramBot {
 					this.sendMessage(data.from.id, failedText)
 				}
 			})
-			this.onText(commands.izin, (data, after) => {
+			this.onText(commands.izin, async (data, after) => {
 				const index = dataGenerate.findIndex(obj => obj.requestor === data.from.id)
 				if (index !== -1) {
 					dataGenerate[index].inputIzin = after[1].toUpperCase().split(",")
-					this.sendMessage(data.from.id, `data izin inisial ${dataGenerate[index].inputIzin} berhasil ditambahkan`).then(() => {
+					const GROUP = dataGenerate[index].group
+					const SHIFT = dataGenerate[index].shift
+					const IZIN = dataGenerate[index].inputIzin
+					const CUTI = dataGenerate[index].inputCuti
+					const SAKIT = dataGenerate[index].inputSakit
+					this.sendMessage(data.from.id, `data izin inisial ${IZIN} berhasil ditambahkan`).then(() => {
 						this.sendMessage(data.from.id, `Processing Data....`).then(async() => {
-							this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${dataGenerate[index].group} Shift ${dataGenerate[index].shift} pada ${today} :\n${await this.getGrup(dataGenerate[index].group,dataGenerate[index].inputSakit,dataGenerate[index].inputIzin,dataGenerate[index].inputCuti)}\nBest Regards,\nGroup ${dataGenerate[index].group}`)
+							this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${today} :\n${await this.getGrup(GROUP,SAKIT,IZIN,CUTI)}\nBest Regards,\nGroup ${GROUP}`).then(async () => {
+								komposisi = `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${today} :\n${await this.getGrup(GROUP,SAKIT,IZIN,CUTI)}\nBest Regards,\nGroup ${GROUP}`
+								this.sendMessage(data.from.id, "Mau di teruskan ke grup Syso Community ?", {
+									reply_markup : {
+										inline_keyboard : choices
+									}
+								})
+							})
 							this.removeItemDataGenerate(data.from.id)
 						})
 					})
@@ -209,14 +250,6 @@ class SysoBot extends TelegramBot {
 						this.sendMessage(data.from.id, `Silahkan masukkan inisial yang sedang izin jika tidak ada dapat mencantumkan - \nContoh : izin pbk,alj atau izin -\nFormat : izin [inisial]`)
 					})
 				}
-			})
-			this.onText(commands.fullTeam, async data => {
-				const index = dataGenerate.findIndex(obj => obj.requestor === data.from.id)
-				this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${dataGenerate[index].group} Shift ${dataGenerate[index].shift} pada ${today} :\n${await this.getGrup(dataGenerate[index].group,[],[],[])}\nBest Regards,\nGroup ${dataGenerate[index].group}`)
-				this.removeItemDataGenerate(data.from.id)
-			})
-			this.onText(commands.halfTeam, async data => {
-				this.sendMessage(data.from.id, "Masukkan inisial yang sedang sakit jika tidak ada dapat mencantumkan - \nContoh : sakit pbk,fkh atau sakit -\nFormat : sakit [inisial]")
 			})
 		} catch (error) {
 			this.sendMessage(dataGenerate[index].requestor,failedText)
@@ -250,6 +283,7 @@ class SysoBot extends TelegramBot {
 			}
 		})
 	}
+
 	async getInisial(inisial){
 		let res = await db.query("SELECT * FROM dataKaryawan WHERE inisial= $1", [inisial])
 		return res.rows[0] === undefined ? false : true
@@ -257,7 +291,7 @@ class SysoBot extends TelegramBot {
 	
 	insertDatabase() {
 		this.onText(commands.insertDb, data => {
-			this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\nadd [inisial],[grup],[role],[TL],[site]\n\nContoh : \nPBK,A,DCMon,true,MBCA")
+			this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\nadd [inisial],[grup],[syso/dcmon],[TL?],[site]\n\nContoh : \nPBK,A,DCMon,true,MBCA")
 		})
 		this.onText(commands.insert, async (data, after) => {
 			const [inisial, grup, role, leader, sites] = after[1].toUpperCase().split(",")
@@ -266,10 +300,6 @@ class SysoBot extends TelegramBot {
 				if (checkInisial === true) {
 					this.sendMessage(data.from.id, `inisial ${inisial} sudah ada pada database kami`)
 				} else {
-					role = role.toUpperCase()
-					grup = grup.toUpperCase()
-					inisial = inisial.toUpperCase()
-					sites = sites.toUpperCase()
 					leader === "true" || leader==="TL" || leader==="yes" ? leader = true : leader = false
           await db.query("INSERT INTO dataKaryawan (inisial, grup, role, leader, sites) VALUES ($1, $2,$3,$4, $5)", [inisial, grup, role, leader, sites])
           this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
@@ -282,13 +312,28 @@ class SysoBot extends TelegramBot {
 
   updateDatabase(){
     this.onText(commands.updateDb, data => {
-      this.sendMessage(data.from.id, "Silahkan masukan data yang ingin di update dengan format sebagai berikut.\n\n[inisial],[grup],[role],[site]\n\nContoh : \nPBK,A,DCMon,MBCA")
+      this.sendMessage(data.from.id, "Silahkan masukan data yang ingin di update dengan format sebagai berikut.\nupdate[inisial] with [grup],[syso/dcmon],[site]\n\nContoh : \nupdate PBK with A,DCMon,MBCA")
     })
+		this.onText(commands.update, async (data, after) => {
+			const inisial = after[1].toUpperCase()
+			const [grup, role, sites] = after[2].toUpperCase().split(",")
+			const checkInisial = await this.getInisial(inisial)
+			try {
+				if (checkInisial === false) {
+					this.sendMessage(data.from.id, `inisial ${inisial} belum ada pada database kami, silahkan tambahkan data dengan menggunakan command \/insert_db`)
+				} else {
+					await db.query("UPDATE dataKaryawan SET grup=$1, role=$2, sites=$3 WHERE inisial=$4", [grup, role, sites, inisial])
+          this.sendMessage(data.from.id, `inisial ${inisial} berhasil diupdate pada database kami`)
+				}
+			} catch (error) {
+				this.sendMessage(936687738,`${error} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
+			}
+		})
   }
 
   deleteDatabase(){
     this.onText(commands.deleteDb, async data => {
-      this.sendMessage(data.from.id, "Silahkan masukan inisial yang ingin di hapus\nContoh : delete pbk\nFormat: delete <INISIAL>")
+      this.sendMessage(data.from.id, "Silahkan masukan inisial yang ingin di hapus\nContoh : delete pbk\nFormat: delete [inisial]")
     })
     this.onText(commands.delete, async (data, after) => {
 			const inisial = after[1].toUpperCase()

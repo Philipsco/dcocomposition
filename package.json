@@ -5,8 +5,8 @@
     "pg": "^8.11.3"
   },
   "name": "sysobot",
-  "version": "1.5.0",
-  "description": "bot telegram",
+  "version": "2.0.0",
+  "description": "bot telegram for dcmon and system operator bca",
   "main": "index.js",
   "scripts": {
     "prod": "node index.js",

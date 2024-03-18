@@ -1,7 +1,10 @@
-const CMD_A = "A";
-const CMD_B = "B";
-const CMD_C = "C";
-const CMD_D = "D";
+const CMD_A = "A"
+const CMD_B = "B"
+const CMD_C = "C"
+const CMD_D = "D"
+const SHIFT_1 = '1'
+const SHIFT_2 = '2'
+const SHIFT_3 = '3'
 const failedText = "Gagal memuat data yang diminta, silahkan coba lagi atau hubungi PBK😢"
 
 const dataRandom = [
@@ -28,10 +31,6 @@ const dataRandom = [
 ];
 const shiftTime = `
 Masuk Shift apa ya ka kalau boleh tau??
-
-\/shift_1 : Masuk Shift 1
-\/shift_2 : Masuk Shift 2
-\/shift_3 : Masuk Shift 3
 `;
 const groupBCA = [
   [
@@ -43,7 +42,8 @@ const groupBCA = [
       text: "B",
       callback_data: CMD_B
     }
-  ],[
+  ],
+  [
     {
       text: "C",
       callback_data: CMD_C
@@ -52,7 +52,56 @@ const groupBCA = [
       text: "D",
       callback_data: CMD_D
     }
-  ]];
+  ]
+]
+
+const choices = [
+  [
+    {
+      text: "Ya, tolong teruskan ke Grup",
+      callback_data: "true"
+    }
+  ],
+  [
+    {
+      text: "Tidak, masih ada yang harus di edit",
+      callback_data: "false"
+    }
+  ]
+]
+
+const shifting = [
+  [
+    {
+      text: "Shift 1",
+      callback_data: SHIFT_1
+    },{
+      text: "Shift 2",
+      callback_data: SHIFT_2
+    }
+  ],
+  [
+    {
+      text: "Shift 3",
+      callback_data: SHIFT_3
+    }
+  ]
+]
+
+const fullTeamOrNot = [
+  [
+    {
+      text: "Masuk Semua",
+      callback_data: "fullteam"
+    }
+  ],
+  [
+    {
+      text: "Ada yang tidak Hadir",
+      callback_data: "halfteam"
+    }
+  ]
+]
 
 const panduanText = `
 Silahkan gunakan perintah yang tersedia berikut ini :
@@ -85,32 +134,28 @@ Thankyou
 `
 const hadirText = `
 Apakah member grup masuk semua??
-\/masuk_semua - untuk memberi tahu bahwa semua hadir
-\/ada_yang_tidak_hadir - untuk memberi tahu bahwa ada yang tidak hadir
-
-Terimakasih
 `
 
 const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc)=>{
   let format = `
 #MBCA
 Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], DCMon [ ${mbcadcmon} ], SOC [ ${mbcasoc} ]
-Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ]
+Tidak Hadir : Sakit 🤒 [ ${mbcasakit} ], Cuti 🏖️ [ ${mbcacuti} ], Izin 🙏 [ ${mbcaizin} ]
 _____________________
 #WSA2
 Hadir : ${wsasl}, Syso [ ${wsasyso} ], DCMon [ ${wsadcmon} ], SOC [ ${wsasoc} ], FM [ ${wsafm} ]
-Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ]
+Tidak Hadir : Sakit 🤒 [ ${wsasakit} ], Cuti 🏖️ [ ${wsacuti} ], Izin 🙏 [ ${wsaizin} ]
 _____________________
 #GAS
 Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
-Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ]
+Tidak Hadir : Sakit 🤒 [ ${gassakit} ], Cuti 🏖️ [ ${gascuti} ], Izin 🙏 [ ${gasizin} ]
 _____________________
 #GAC
 Hadir : ${gacsl}, SOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
-Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ]
+Tidak Hadir : Sakit 🤒 [ ${gacsakit} ], Cuti 🏖️ [ ${gaccuti} ], Izin 🙏 [ ${gacizin} ]
 _____________________
 `
   return format
 }
 
-module.exports = {groupBCA, shiftTime, panduanText, greetText, hadirText, failedText, dataRandom,formatData}
+module.exports = {groupBCA, choices, shiftTime, shifting, fullTeamOrNot, panduanText, greetText, hadirText, failedText, dataRandom,formatData}
