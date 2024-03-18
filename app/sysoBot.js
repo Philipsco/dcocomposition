@@ -95,14 +95,13 @@ class SysoBot extends TelegramBot {
 				const api = await fetch(bmkg)
         const response = await api.json()
         const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-        const image = `${bmkg_endpoint}${Shakemap}`
+        const image = `${bmkg_endpoint}${Shakemap}?000`
         for(let x = 0; x < count; x++){
 					let userId = data[x].userid
 					try {
 						if (dumpGempa.date !== Tanggal && dumpGempa.time !== Jam) {
 							const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
               this.sendPhoto(userId, image, { caption: result })
-							console.log(dumpGempa)
 						} else{
 							console.log(dumpGempa)
 						}
