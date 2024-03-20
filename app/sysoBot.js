@@ -15,9 +15,9 @@ class SysoBot extends TelegramBot {
 
   async checkAndInsertDbUserId(userId, name){
 		try {
-			const res = await db.query("SELECT * FROM dataUserIDs WHERE userId=$1",[userId])
+			const res = await db.query("SELECT * FROM datauserid WHERE userId=$1",[userId])
 			if(res.rows[0]=== undefined) {
-				await db.query("INSERT INTO dataUserIDs (userId, userName) VALUES ($1, $2)", [userId, name])
+				await db.query("INSERT INTO datauserid (userid, username) VALUES ($1, $2)", [userId, name])
 				return false
 			} else {
 				return true
@@ -66,17 +66,17 @@ class SysoBot extends TelegramBot {
 		this.onText(commands.quake, async (data) => {
 			const id = data.from.id
 			this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
-			const bmkg = bmkg_endpoint+'autogempa.json'
-			this.sendMessage(id, "mohon ditunggu rekan seperjuangan...")
+			const bmkg = bmkg_endpoint+'autogempa.json?000'
 			try {
+				this.sendMessage(id, "mohon ditunggu rekan seperjuangan...")
 				const api = await fetch(bmkg)
         const response = await api.json()
         const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-        const image = `${bmkg_endpoint}${Shakemap}`
+        const image = `${bmkg_endpoint}${Shakemap}?000`
         const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
         this.sendPhoto(id, image, { caption: result })
 			} catch (e) {
-				this.sendMessage(data.from.id, failedText)
+				this.sendMessage(id, failedText)
         this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
 			}
 		})
@@ -90,7 +90,7 @@ class SysoBot extends TelegramBot {
 		const duration = 1 * 60 * 1000
 		setInterval(async () => {
 			const bmkg = bmkg_endpoint+'autogempa.json'
-      const res = await db.query("SELECT userid FROM dataUserIDs")
+      const res = await db.query("SELECT userid FROM datauserid")
       const count = res.rowCount
       let data = res.rows
       if (count > 0) {
@@ -459,7 +459,7 @@ class SysoBot extends TelegramBot {
 							break
 					default:
 						break
-					}
+				}
 			}
 			for(let y=0; y<resKeterangan.rows.length; y++){
 				let pushData = resKeterangan.rows[y].inisial
@@ -497,17 +497,17 @@ class SysoBot extends TelegramBot {
                 gasizin.push(pushData)
             }
             break
-						case 'GAC':
-              if(sakit.includes(pushData)){
-                  gacsakit.push(pushData)
-              }
-              if(cuti.includes(pushData)){
-                  gaccuti.push(pushData)
-              }
-              if(izin.includes(pushData)){
-                  gacizin.push(pushData)
-              }
-              break
+					case 'GAC':
+						if(sakit.includes(pushData)){
+							gacsakit.push(pushData)
+						}
+            if(cuti.includes(pushData)){
+              gaccuti.push(pushData)
+            }
+            if(izin.includes(pushData)){
+              gacizin.push(pushData)
+            }
+            break
 				}
 			}
 			defaultValueSL(mbcasl)

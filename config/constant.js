@@ -12,8 +12,8 @@ const dataRandom = [
   "Terimakasih untuk supportnya rekan GSIT yang baik hati",
   "Major incident, Sudah mulai berangsur normal",
   "Mau info untuk incident sudah aman dan normal kembali terima kasih ",
-  "semoga group POMI ini sepi, hati tenang pikiran damai",
-  "Duhai tim gsit makin elegan, Incident kami tutup, terimakasih dan sampai jumpa",
+  "semoga group POMI ini sepi dan damai",
+  "Duhai tim gsit makin elegan, terimakasih dan sampai jumpa",
   "Walaupun failure QR masih terjadi, setidaknya sudah semakin membaik",
   "Semoga mulai hari ini, APM QR tidak bedarah kembali",
   "E-Channel sudah normal kembali gan, mantap",
@@ -22,12 +22,11 @@ const dataRandom = [
   "terimakasih dan selamat melanjutkan aktivitas",
   "terimakasih",
   "terimakasih, kendala selesai dengan tuntas",
-  "bodo amat",
-  "mohon maaf lahir batin",
-  "namanya siapa",
-  "jangan sok tau!!",
-  "selow aja kali",
-  "aku anak mama"
+  "arigato gozaimas rekan",
+  "terimakasih orang baik",
+  "kendala selesai dengan tuntas",
+  "sehat sehat terus orang baik",
+  "hore, kendala selesai juga"
 ];
 const shiftTime = `
 Masuk Shift apa ya ka kalau boleh tau??
@@ -141,19 +140,19 @@ const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizi
 #MBCA
 Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], DCMon [ ${mbcadcmon} ], SOC [ ${mbcasoc} ]
 Tidak Hadir : Sakit 🤒 [ ${mbcasakit} ], Cuti 🏖️ [ ${mbcacuti} ], Izin 🙏 [ ${mbcaizin} ]
-_____________________
+________________________
 #WSA2
 Hadir : ${wsasl}, Syso [ ${wsasyso} ], DCMon [ ${wsadcmon} ], SOC [ ${wsasoc} ], FM [ ${wsafm} ]
 Tidak Hadir : Sakit 🤒 [ ${wsasakit} ], Cuti 🏖️ [ ${wsacuti} ], Izin 🙏 [ ${wsaizin} ]
-_____________________
+________________________
 #GAS
 Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
 Tidak Hadir : Sakit 🤒 [ ${gassakit} ], Cuti 🏖️ [ ${gascuti} ], Izin 🙏 [ ${gasizin} ]
-_____________________
+________________________
 #GAC
 Hadir : ${gacsl}, SOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
 Tidak Hadir : Sakit 🤒 [ ${gacsakit} ], Cuti 🏖️ [ ${gaccuti} ], Izin 🙏 [ ${gacizin} ]
-_____________________
+________________________
 `
   return format
 }
