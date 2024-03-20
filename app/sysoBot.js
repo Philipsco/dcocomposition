@@ -155,7 +155,8 @@ class SysoBot extends TelegramBot {
 						}
 					})
 				} else if (callback.data === "true") {
-					this.sendMessage(-1001407032897, await komposisi)
+					const idSyso = await db.query(`SELECT userid FROM datauserid WHERE username=$1`, ['Syso Community'])
+					this.sendMessage(idSyso.rows[0].userid, await komposisi)
 					this.editMessageText("Komposisi sudah di kirim ke Syso Community", {chat_id : callback.from.id, message_id: callback.message.message_id})
 					komposisi = null
 				} else if (callback.data === "false") {
