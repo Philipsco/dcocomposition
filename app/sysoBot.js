@@ -4,7 +4,6 @@ const {groupBCA, choices, shiftTime, shifting, fullTeamOrNot, panduanText, greet
 const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
 const today = checkTime()
-const bmkg_endpoint = 'https://data.bmkg.go.id/DataMKG/TEWS/'
 let dataGenerate =[]
 let komposisi
 class SysoBot extends TelegramBot {
@@ -87,9 +86,9 @@ class SysoBot extends TelegramBot {
 			date: null,
 			time: null
 		}
-		const duration = 1 * 60 * 1000
+		const duration = 1 * 90 * 1000
 		setInterval(async () => {
-			const bmkg = bmkg_endpoint+'autogempa.json'
+			const bmkg = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json?000'
       const res = await db.query("SELECT userid FROM datauserid")
       const count = res.rowCount
       let data = res.rows
@@ -97,18 +96,18 @@ class SysoBot extends TelegramBot {
 				const api = await fetch(bmkg)
         const response = await api.json()
         const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-        const image = `${bmkg_endpoint}${Shakemap}?000`
+        let image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}?000`
         for(let x = 0; x < count; x++){
 					let userId = data[x].userid
 					try {
 						if (dumpGempa.date !== Tanggal && dumpGempa.time !== Jam) {
 							const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
-              this.sendPhoto(userId, image, { caption: result })
-						} else{
-							console.log(dumpGempa)
+              setTimeout(async () => {
+								await this.sendPhoto(userId, image, { caption: result })
+							}	,1*1*50)
 						}
 					} catch (e) {
-						this.sendMessage(userId, failedText)
+						this.sendMessage(userId, "Cycle Check info Gempa Error")
 						this.sendMessage(936687738,`${e} pada sendInfoGempaAuto`)
 					}
 				}
