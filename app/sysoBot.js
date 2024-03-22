@@ -65,13 +65,13 @@ class SysoBot extends TelegramBot {
 		this.onText(commands.quake, async (data) => {
 			const id = data.from.id
 			this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
-			const bmkg = bmkg_endpoint+'autogempa.json?000'
+			const bmkg = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json?000'
 			try {
 				this.sendMessage(id, "mohon ditunggu rekan seperjuangan...")
 				const api = await fetch(bmkg)
         const response = await api.json()
         const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-        const image = `${bmkg_endpoint}${Shakemap}?000`
+        const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}?000`
         const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
         this.sendPhoto(id, image, { caption: result })
 			} catch (e) {
@@ -100,7 +100,7 @@ class SysoBot extends TelegramBot {
         for(let x = 0; x < count; x++){
 					let userId = data[x].userid
 					try {
-						if (dumpGempa.date !== Tanggal && dumpGempa.time !== Jam) {
+						if (dumpGempa.date !== Tanggal || dumpGempa.time !== Jam) {
 							const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
               setTimeout(async () => {
 								await this.sendPhoto(userId, image, { caption: result })
