@@ -301,7 +301,7 @@ class SysoBot extends TelegramBot {
 					this.sendMessage(data.from.id, `inisial ${inisial} sudah ada pada database kami`)
 				} else {
 					leader === "true" || leader==="TL" || leader==="yes" ? leader = true : leader = false
-          await db.query("INSERT INTO dataKaryawan (inisial, grup, role, leader, sites) VALUES ($1, $2,$3,$4, $5)", [inisial, grup, role, leader, sites])
+          await db.query("INSERT INTO dataKaryawan (inisial, grup, role, leader, sites, id) VALUES ($1, $2,$3,$4, $5, $6)", [inisial, grup, role, leader, sites, Math.floor(Math.random() * 9999) + 107])
           this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
 				} 
 			} catch (error) {
