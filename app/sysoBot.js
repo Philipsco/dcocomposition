@@ -294,8 +294,8 @@ class SysoBot extends TelegramBot {
 			this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\nadd [inisial],[grup],[syso/dcmon],[TL?],[site]\n\nContoh : \nPBK,A,DCMon,true,MBCA")
 		})
 		this.onText(commands.insert, async (data, after) => {
-			const [inisial, grup, role, leader, sites] = after[1].toUpperCase().split(",")
-			const checkInisial = await this.getInisial(inisial)
+			let [inisial, grup, role, leader, sites] = after[1].toUpperCase().split(",")
+			let checkInisial = await this.getInisial(inisial)
 			try {
 				if (checkInisial === true) {
 					this.sendMessage(data.from.id, `inisial ${inisial} sudah ada pada database kami`)
