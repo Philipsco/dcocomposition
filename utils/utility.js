@@ -3,16 +3,13 @@ const commands = require("../config/cmd.js");
 function checkTime() {
     const jakarta_zone = 7
     const _date = new Date()
-    const usaOffset = _date.getTimezoneOffset()/60
-    const timeDiff = jakarta_zone - (-usaOffset)
-    const indoTime = new Date(_date.getTime() + timeDiff * 3600000)
-    let day = indoTime.getDay()
-    const date = ("0" + indoTime.getDate()).slice(-2);
-    const month = ("0" + (indoTime.getMonth() + 1)).slice(-2);
-    const year = indoTime.getFullYear();
-    const hours = indoTime.getHours()
-    const minutes = indoTime.getMinutes();
-    const seconds = indoTime.getSeconds();
+    let day = _date.getDay()
+    const date = ("0" + _date.getDate()).slice(-2)
+    const month = ("0" + (_date.getMonth() + 1)).slice(-2)
+    const year = _date.getFullYear()
+    const hours = _date.getHours() + jakarta_zone
+    const minutes = _date.getMinutes()
+    const seconds = _date.getSeconds()
 
       switch (day) {
         case 0:

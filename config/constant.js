@@ -139,19 +139,19 @@ const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizi
   let format = `
 #MBCA
 Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], DCMon [ ${mbcadcmon} ], SOC [ ${mbcasoc} ]
-Tidak Hadir : Sakit 🤒 [ ${mbcasakit} ], Cuti 🏖️ [ ${mbcacuti} ], Izin 🙏 [ ${mbcaizin} ]
+Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ]
 ________________________
 #WSA2
 Hadir : ${wsasl}, Syso [ ${wsasyso} ], DCMon [ ${wsadcmon} ], SOC [ ${wsasoc} ], FM [ ${wsafm} ]
-Tidak Hadir : Sakit 🤒 [ ${wsasakit} ], Cuti 🏖️ [ ${wsacuti} ], Izin 🙏 [ ${wsaizin} ]
+Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ]
 ________________________
 #GAS
 Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
-Tidak Hadir : Sakit 🤒 [ ${gassakit} ], Cuti 🏖️ [ ${gascuti} ], Izin 🙏 [ ${gasizin} ]
+Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ]
 ________________________
 #GAC
 Hadir : ${gacsl}, SOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
-Tidak Hadir : Sakit 🤒 [ ${gacsakit} ], Cuti 🏖️ [ ${gaccuti} ], Izin 🙏 [ ${gacizin} ]
+Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ]
 ________________________
 `
   return format
