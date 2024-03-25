@@ -22,7 +22,7 @@ class SysoBot extends TelegramBot {
 				return true
 			}
 		} catch (e) {
-			this.sendMessage(data.from.id, failedText)
+			this.sendMessage(userId, failedText)
 			this.sendMessage(936687738,`${e} pada saat check dan insert db pada userid`)
 		}   
   }
