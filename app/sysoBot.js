@@ -409,21 +409,21 @@ class SysoBot extends TelegramBot {
 					body: JSON.stringify({query: getServiceId})
 				})
 				
-				APIGETID.json().then(data => {
+				APIGETID.json().then(async data => {
 					console.log(data)
 					this.sendMessage(callback.from.id, "get service id to deploy")
-					const serviceId = data.data.deployments.edges[0].node.id
+					let serviceId = data.data.deployments.edges[0].node.id
 					console.log(serviceId)
-					fetch(railway, {
+					const DEPLOY = await fetch(railway, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
 							'Authorization': `Bearer ${token}`
 						},
-						body: JSON.stringify({query: `mutation deploymentRestart {
-							deploymentRestart(id: "${serviceId}")
-						}`})
-					}).then(response => response.json()).then(d=> {
+						body: JSON.stringify({query: `mutation deploymentRestart { deploymentRestart(id: "${serviceId}")}`})
+					})
+
+					DEPLOY.json().then(d=> {
 						console.log(d)
 						this.sendMessage(callback.from.id, "done redeploy rekan")
 						setTimeout(async () => {
