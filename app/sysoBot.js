@@ -396,6 +396,7 @@ class SysoBot extends TelegramBot {
 			}
 		}`
 
+		let id
 		this.onText(commands.redeploy, async callback => {
 			await db.query("DELETE FROM datauserid").then(async () => {
 				this.sendMessage(callback.from.id, "delete data user id done ya")
@@ -411,27 +412,28 @@ class SysoBot extends TelegramBot {
 				body: JSON.stringify({query: getServiceId})
 			}).then(response => response.json()).then(async data => {
 				console.log(data)
-				let id = data.data.deployments.edges[0].node.id
-				await fetch(railway, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${token}`
-					},
-					body: JSON.stringify({query: `mutation deploymentRestart {
-						deploymentRestart(id: "${id}")
-					}`})
-				}).then(response => response.json()).then(data => {
-					console.log(data)
-					this.sendMessage(callback.from.id, "done redeploy rekan")
-					setTimeout(async () => {
-						await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"]).then(() => {
-							this.sendMessage(callback.from.id, "insert user id syso community done")
-						})
-					}, 2 * 60 * 1000)
-				}).catch(error => {
-					console.error(error)
-				})
+				id = await data.data.deployments.edges[0].node.id
+			}).catch(error => {
+				console.error(error)
+			})
+
+			await fetch(railway, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
+				body: JSON.stringify({query: `mutation deploymentRestart {
+					deploymentRestart(id: "${id}")
+				}`})
+			}).then(response => response.json()).then(data => {
+				console.log(data)
+				this.sendMessage(callback.from.id, "done redeploy rekan")
+				setTimeout(async () => {
+					await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"]).then(() => {
+						this.sendMessage(callback.from.id, "insert user id syso community done")
+					})
+				}, 2 * 60 * 1000)
 			}).catch(error => {
 				console.error(error)
 			})
