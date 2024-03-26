@@ -410,6 +410,7 @@ class SysoBot extends TelegramBot {
 				},
 				body: JSON.stringify({query: getServiceId})
 			}).then(response => response.json()).then(async data => {
+				console.log(data)
 				let id = data.data.deployments.edges[0].node.id
 				await fetch(railway, {
 					method: 'POST',
@@ -428,6 +429,8 @@ class SysoBot extends TelegramBot {
 							this.sendMessage(callback.from.id, "insert user id syso community done")
 						})
 					}, 2 * 60 * 1000)
+				}).catch(error => {
+					console.error(error)
 				})
 			}).catch(error => {
 				console.error(error)
