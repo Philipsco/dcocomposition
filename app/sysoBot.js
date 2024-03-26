@@ -395,46 +395,45 @@ class SysoBot extends TelegramBot {
 				}
 			}
 		}`
-
-		let id
 		this.onText(commands.redeploy, async callback => {
 			await db.query("DELETE FROM datauserid").then(async () => {
 				this.sendMessage(callback.from.id, "delete data user id done ya")
 				await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [936687738, "Philip"])
 			})
 
-			await fetch(railway, {
+			const APIGETID = await fetch(railway, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 					'Authorization': `Bearer ${token}`
 				},
 				body: JSON.stringify({query: getServiceId})
-			}).then(response => response.json()).then(async data => {
-				console.log(data)
-				this.sendMessage(callback.from.id, "get service id to deploy")
-				id = await data.data.deployments.edges[0].node.id
-			}).catch(error => {
-				console.error(error)
 			})
 
-			await fetch(railway, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${token}`
-				},
-				body: JSON.stringify({query: `mutation deploymentRestart {
-					deploymentRestart(id: "${id}")
-				}`})
-			}).then(response => response.json()).then(data => {
+			APIGETID.json().then(data => {
 				console.log(data)
-				this.sendMessage(callback.from.id, "done redeploy rekan")
-				setTimeout(async () => {
-					await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"]).then(() => {
+				this.sendMessage(callback.from.id, "get service id to deploy")
+				const serviceId = data.data.deployments.edges[0].node.id
+				fetch(railway, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${token}`
+					},
+					body: JSON.stringify({query: `mutation deploymentRestart {
+						deploymentRestart(id: "${serviceId}")
+					}`})
+				}).then(response => response.json()).then(d=> {
+					console.log(d)
+					this.sendMessage(callback.from.id, "done redeploy rekan")
+					setTimeout(async () => {
+						await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"]).then(() => {
 						this.sendMessage(callback.from.id, "insert user id syso community done")
 					})
 				}, 2 * 60 * 1000)
+				}).catch(error => {
+					console.error(error)
+				})
 			}).catch(error => {
 				console.error(error)
 			})
