@@ -396,46 +396,44 @@ class SysoBot extends TelegramBot {
 			}
 		}`
 		this.onText(commands.redeploy, async callback => {
-			await db.query("DELETE FROM datauserid").then(async () => {
-				this.sendMessage(callback.from.id, "delete data user id done ya")
-				await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [936687738, "Philip"])
-			}).then(async () => {
-				const APIGETID = await fetch(railway, {
+			await db.query("DELETE FROM datauserid")
+			this.sendMessage(callback.from.id, "delete data user id done ya")
+			await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [936687738, "Philip"])
+			const APIGETID = await fetch(railway, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
+				body: JSON.stringify({query: getServiceId})
+			})
+
+			APIGETID.json().then(data => {
+				console.log(data)
+				this.sendMessage(callback.from.id, "get service id to deploy")
+				const serviceId = data.data.deployments.edges[0].node.id
+				fetch(railway, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 						'Authorization': `Bearer ${token}`
 					},
-					body: JSON.stringify({query: getServiceId})
-				})
-	
-				APIGETID.json().then(data => {
-					console.log(data)
-					this.sendMessage(callback.from.id, "get service id to deploy")
-					const serviceId = data.data.deployments.edges[0].node.id
-					fetch(railway, {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							'Authorization': `Bearer ${token}`
-						},
-						body: JSON.stringify({query: `mutation deploymentRestart {
-							deploymentRestart(id: "${serviceId}")
-						}`})
-					}).then(response => response.json()).then(d=> {
-						console.log(d)
-						this.sendMessage(callback.from.id, "done redeploy rekan")
-						setTimeout(async () => {
-							await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"]).then(() => {
-							this.sendMessage(callback.from.id, "insert user id syso community done")
-						})
-					}, 2 * 60 * 1000)
-					}).catch(error => {
-						console.error(error)
+					body: JSON.stringify({query: `mutation deploymentRestart {
+						deploymentRestart(id: "${serviceId}")
+					}`})
+				}).then(response => response.json()).then(d=> {
+					console.log(d)
+					this.sendMessage(callback.from.id, "done redeploy rekan")
+					setTimeout(async () => {
+						await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"]).then(() => {
+						this.sendMessage(callback.from.id, "insert user id syso community done")
 					})
+				}, 2 * 60 * 1000)
 				}).catch(error => {
 					console.error(error)
 				})
+			}).catch(error => {
+				console.error(error)
 			})
 		})
 	}
