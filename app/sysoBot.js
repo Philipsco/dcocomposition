@@ -412,6 +412,7 @@ class SysoBot extends TelegramBot {
 				body: JSON.stringify({query: getServiceId})
 			}).then(response => response.json()).then(async data => {
 				console.log(data)
+				this.sendMessage(callback.from.id, "get service id to deploy")
 				id = await data.data.deployments.edges[0].node.id
 			}).catch(error => {
 				console.error(error)
