@@ -5,6 +5,8 @@ env.config()
 const botToken = process.env.BOT_TOKEN
 const serverToken = process.env.DCO_TOKEN
 const serviceId = process.env.SERVICE_ID
+const envId = process.env.ENV_ID
+const projectId = process.env.PROJECT_ID
 const sysoBot = new Bots(botToken, {polling: {
   params: {
     limit: 1,
@@ -23,7 +25,7 @@ const main = () => {
   sysoBot.getEathquake()
   sysoBot.sendInfoGempaAuto()
   sysoBot.getGeneratePantun()
-  sysoBot.formatDataUser(serverToken,serviceId)
+  sysoBot.formatDataUser(serverToken,envId,projectId,serviceId)
 }
 
 main()
