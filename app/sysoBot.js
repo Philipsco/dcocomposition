@@ -377,12 +377,7 @@ class SysoBot extends TelegramBot {
   }
 
 	formatDataUser(token,env,project,service){
-		let id
 		const railway = 'https://backboard.railway.app/graphql/v2'
-		const reqQuery = `mutation deploymentRestart {
-			deploymentRestart(id: "${id}")
-		}`
-
 		const getServiceId = `query deployments {
 			deployments(
 				first: 1
@@ -414,27 +409,26 @@ class SysoBot extends TelegramBot {
 					'Authorization': `Bearer ${token}`
 				},
 				body: JSON.stringify({query: getServiceId})
-			}).then(response => response.json()).then(data => {
-				id = data.data.deployments.edges[0].node.id
-			}).catch(error => {
-				console.error(error)
-			})
-
-      await fetch(railway, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${token}`
-				},
-				body: JSON.stringify({query: reqQuery})
-			}).then(response => response.json()).then(data => {
-				console.log(data)
-				this.sendMessage(callback.from.id, "done redeploy rekan")
-				setTimeout(async () => {
-					await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"]).then(() => {
-						this.sendMessage(callback.from.id, "insert user id syso community done")
-					})
-				}, 2 * 60 * 1000)
+			}).then(response => response.json()).then(async data => {
+				let id = data.data.deployments.edges[0].node.id
+				await fetch(railway, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${token}`
+					},
+					body: JSON.stringify({query: `mutation deploymentRestart {
+						deploymentRestart(id: "${id}")
+					}`})
+				}).then(response => response.json()).then(data => {
+					console.log(data)
+					this.sendMessage(callback.from.id, "done redeploy rekan")
+					setTimeout(async () => {
+						await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"]).then(() => {
+							this.sendMessage(callback.from.id, "insert user id syso community done")
+						})
+					}, 2 * 60 * 1000)
+				})
 			}).catch(error => {
 				console.error(error)
 			})
