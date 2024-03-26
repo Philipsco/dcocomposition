@@ -385,6 +385,7 @@ class SysoBot extends TelegramBot {
 		this.onText(commands.redeploy, async callback => {
 			await db.query("DELETE FROM datauserid").then(async () => {
 				this.sendMessage(callback.from.id, "delete data user id done ya")
+				await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [936687738, "Philip"])
 			})
 
       await fetch(railway, {
