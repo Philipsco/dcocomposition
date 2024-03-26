@@ -409,11 +409,12 @@ class SysoBot extends TelegramBot {
 					body: JSON.stringify({query: getServiceId})
 				})
 				
-				APIGETID.json().then(async data => {
+				APIGETID.json().then(data => {
 					console.log(data)
 					this.sendMessage(callback.from.id, "get service id to deploy")
-					const serviceId = await data.data.deployments.edges[0].node.id
-					await fetch(railway, {
+					const serviceId = data.data.deployments.edges[0].node.id
+					console.log(serviceId)
+					fetch(railway, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
