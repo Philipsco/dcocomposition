@@ -376,64 +376,6 @@ class SysoBot extends TelegramBot {
 		})
   }
 
-	formatDataUser(token,env,project,service){
-		const railway = 'https://backboard.railway.app/graphql/v2'
-		const getServiceId = `query deployments {
-			deployments(
-				first: 1
-				input: {
-					projectId: "${project}"
-					environmentId: "${env}"
-					serviceId: "${service}"
-				}
-			) {
-				edges {
-					node {
-						id
-						staticUrl
-					}
-				}
-			}
-		}`
-		this.onText(commands.redeploy, async callback => {
-			try {
-				db.query("DELETE FROM datauserid")
-				this.sendMessage(callback.from.id, "delete data user id done ya")
-				db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [936687738, "Philip"])
-				const APIGETID = await fetch(railway, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${token}`
-					},
-					body: JSON.stringify({query: getServiceId})
-				})
-				
-				await APIGETID.json().then(async data => {
-					console.log(data)
-					this.sendMessage(callback.from.id, "get service id to deploy")
-					let serviceId = await data.data.deployments.edges[0].node.id
-					console.log(serviceId)
-					await fetch(railway, {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							'Authorization': `Bearer ${token}`
-						},
-						body: JSON.stringify({query: `mutation deploymentRestart { deploymentRestart(id: "${serviceId}")}`})
-					})
-				})
-
-				await this.sendMessage(callback.from.id, "done redeploy rekan").then(() => {setTimeout(() => {
-					db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"])
-					this.sendMessage(callback.from.id, "insert user id syso community done")
-				}, 2 * 60 * 1000)} )
-			} catch (error) {
-				console.error(error)
-			}
-		})
-	}
-	
 	async getGrup(group,sakit,izin,cuti,lpt,training){
 		let mbcasyso =[];let mbcadcmon = [];let mbcasl = [];let mbcasoc = [];let mbcaizin =[];let mbcasakit =[];let mbcacuti =[]; let mbcalpt =[]; let mbcatraining = [];
     let wsasyso =[];let wsadcmon = [];let wsasl = [];let wsasoc = [];let wsaizin =[];let wsasakit =[];let wsacuti =[]; let wsafm = []; let wsalpt =[]; let wsatraining = [];
