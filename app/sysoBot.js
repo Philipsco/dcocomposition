@@ -395,12 +395,12 @@ class SysoBot extends TelegramBot {
 				}
 			}
 		}`
-		this.onText(commands.redeploy, callback => {
+		this.onText(commands.redeploy, async callback => {
 			try {
 				db.query("DELETE FROM datauserid")
 				this.sendMessage(callback.from.id, "delete data user id done ya")
 				db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [936687738, "Philip"])
-				const APIGETID = fetch(railway, {
+				const APIGETID = await fetch(railway, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -409,7 +409,7 @@ class SysoBot extends TelegramBot {
 					body: JSON.stringify({query: getServiceId})
 				})
 				
-				APIGETID.json().then(async data => {
+				await APIGETID.json().then(async data => {
 					console.log(data)
 					this.sendMessage(callback.from.id, "get service id to deploy")
 					let serviceId = await data.data.deployments.edges[0].node.id
@@ -424,7 +424,7 @@ class SysoBot extends TelegramBot {
 					})
 				})
 
-				this.sendMessage(callback.from.id, "done redeploy rekan").then(() => {setTimeout(() => {
+				await this.sendMessage(callback.from.id, "done redeploy rekan").then(() => {setTimeout(() => {
 					db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"])
 					this.sendMessage(callback.from.id, "insert user id syso community done")
 				}, 2 * 60 * 1000)} )
