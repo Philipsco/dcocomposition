@@ -424,12 +424,11 @@ class SysoBot extends TelegramBot {
 					})
 				})
 
-				this.sendMessage(callback.from.id, "done redeploy rekan").then(()=>{
-					setTimeout(async () => {
-						await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"])
-						this.sendMessage(callback.from.id, "insert user id syso community done")
-					}, 2 * 60 * 1000)
-				})
+				this.sendMessage(callback.from.id, "done redeploy rekan")
+				setTimeout(async () => {
+					await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"])
+					this.sendMessage(callback.from.id, "insert user id syso community done")
+				}, 2 * 60 * 1000)
 			} catch (error) {
 				console.error(error)
 			}
