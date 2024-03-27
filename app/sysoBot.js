@@ -395,12 +395,12 @@ class SysoBot extends TelegramBot {
 				}
 			}
 		}`
-		this.onText(commands.redeploy, async callback => {
+		this.onText(commands.redeploy, callback => {
 			try {
-				await db.query("DELETE FROM datauserid")
+				db.query("DELETE FROM datauserid")
 				this.sendMessage(callback.from.id, "delete data user id done ya")
-				await db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [936687738, "Philip"])
-				const APIGETID = await fetch(railway, {
+				db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [936687738, "Philip"])
+				const APIGETID = fetch(railway, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -409,12 +409,12 @@ class SysoBot extends TelegramBot {
 					body: JSON.stringify({query: getServiceId})
 				})
 				
-				APIGETID.json().then(data => {
+				APIGETID.json().then(async data => {
 					console.log(data)
 					this.sendMessage(callback.from.id, "get service id to deploy")
-					let serviceId = data.data.deployments.edges[0].node.id
+					let serviceId = await data.data.deployments.edges[0].node.id
 					console.log(serviceId)
-					fetch(railway, {
+					await fetch(railway, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
@@ -424,11 +424,10 @@ class SysoBot extends TelegramBot {
 					})
 				})
 
-				this.sendMessage(callback.from.id, "done redeploy rekan")
-				setTimeout(() => {
+				this.sendMessage(callback.from.id, "done redeploy rekan").then(() => {setTimeout(() => {
 					db.query("INSERT INTO datauserid(userid,username) VALUES($1,$2)", [-1001960944681, "Syso Community"])
 					this.sendMessage(callback.from.id, "insert user id syso community done")
-				}, 2 * 60 * 1000)
+				}, 2 * 60 * 1000)} )
 			} catch (error) {
 				console.error(error)
 			}
