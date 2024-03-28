@@ -41,10 +41,10 @@ function checkTime() {
 
 function checkCommands(bot) {
   bot.on("message", (data) => {
-      const isInCommand = Object.values(commands).some((keyword) => keyword.test(data.text))
-      if (!isInCommand) {
-          bot.sendMessage(data.from.id, "Saya tidak mengerti 🙏\nketik \/\help untuk memunculkan panduan")
-      }
+    const isInCommand = Object.values(commands).some((keyword) => keyword.test(data.text))
+    if (!isInCommand) {
+      bot.sendMessage(data.from.id, "Saya tidak mengerti 🙏\nketik \/\help untuk memunculkan panduan")
+    }
   })
 }
 

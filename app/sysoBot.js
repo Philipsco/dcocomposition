@@ -12,6 +12,12 @@ class SysoBot extends TelegramBot {
 		checkCommands(this)
 		console.log(today)
 	}
+	sendPing(){
+		setInterval(() => {
+			this.sendMessage(936687738,`BOT masih Berjalan normal rekan`)
+		}, 60*60*1000);
+		
+	}
 
   async checkAndInsertDbUserId(userId, name){
 		try {
@@ -88,37 +94,41 @@ class SysoBot extends TelegramBot {
 			time: null
 		}
 		const duration = 1 * 90 * 1000
-		setInterval(async () => {
-			const bmkg = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json?000'
-      const res = await db.query("SELECT userid FROM datauserid")
-      const count = res.rowCount
-      let data = res.rows
-      if (count > 0) {
-				const api = await fetch(bmkg)
-        const response = await api.json()
-        const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-        let image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}?000`
-        for(let x = 0; x < count; x++){
-					let userId = data[x].userid
-					try {
-						if (dumpGempa.date !== Tanggal || dumpGempa.time !== Jam) {
-							const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
-              setTimeout(async () => {
-								await this.sendPhoto(userId, image, { caption: result })
-							}	,1*1*50)
+		try {
+			setInterval(async () => {
+				const bmkg = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json?000'
+				const res = await db.query("SELECT userid FROM datauserid")
+				const count = res.rowCount
+				let data = res.rows
+				if (count > 0) {
+					const api = await fetch(bmkg)
+					const response = await api.json()
+					const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
+					let image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}?000`
+					for(let x = 0; x < count; x++){
+						let userId = data[x].userid
+						try {
+							if (dumpGempa.date !== Tanggal || dumpGempa.time !== Jam) {
+								const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
+								setTimeout(async () => {
+									await this.sendPhoto(userId, image, { caption: result })
+								}	,1*1*50)
+							}
+						} catch (e) {
+							this.sendMessage(userId, "Cycle Check info Gempa Error")
+							this.sendMessage(936687738,`${e} pada sendInfoGempaAuto`)
 						}
-					} catch (e) {
-						this.sendMessage(userId, "Cycle Check info Gempa Error")
-						this.sendMessage(936687738,`${e} pada sendInfoGempaAuto`)
 					}
+					dumpGempa.date = Tanggal
+					dumpGempa.time = Jam
+					console.log(dumpGempa)
+				} else {
+					clearInterval(duration)
 				}
-				dumpGempa.date = Tanggal
-        dumpGempa.time = Jam
-				console.log(dumpGempa)
-			} else {
-				clearInterval(duration)
-			}
-		}, duration)
+			}, duration)
+		} catch (error) {
+			console.error(error)
+		}
 	}
 	
 	getGenerate() {
