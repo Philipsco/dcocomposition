@@ -10,6 +10,7 @@ class SysoBot extends TelegramBot {
 	constructor(token, options) {
 		super(token, options);
 		checkCommands(this)
+		console.log(today)
 	}
 
   async checkAndInsertDbUserId(userId, name){
@@ -24,7 +25,7 @@ class SysoBot extends TelegramBot {
 		} catch (e) {
 			this.sendMessage(userId, failedText)
 			this.sendMessage(936687738,`${e} pada saat check dan insert db pada userid`)
-		}   
+		}
   }
 
 	removeItemDataGenerate(id){
