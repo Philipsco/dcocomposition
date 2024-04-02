@@ -107,7 +107,7 @@ class SysoBot extends TelegramBot {
 					for(let x = 0; x < count; x++){
 						let userId = data[x].userid
 						try {
-							if (dumpGempa.date !== Tanggal || dumpGempa.time !== Jam) {
+							if (Magnitude >= 5.4 && (dumpGempa.date !== Tanggal || dumpGempa.time !== Jam)) {
 								const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
 								setTimeout(async () => {
 									await this.sendPhoto(userId, image, { caption: result })
