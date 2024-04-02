@@ -3,14 +3,13 @@ const commands = require("../config/cmd.js")
 const {groupBCA, choices, shiftTime, shifting, fullTeamOrNot, panduanText, greetText, hadirText, failedText, dataRandom, formatData} = require("../config/constant.js");
 const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
-const today = checkTime()
 let dataGenerate =[]
 let komposisi
 class SysoBot extends TelegramBot {
 	constructor(token, options) {
 		super(token, options);
 		checkCommands(this)
-		console.log(today)
+		console.log(checkTime())
 	}
 	sendPing(){
 		setInterval(() => {
@@ -53,7 +52,7 @@ class SysoBot extends TelegramBot {
 			try {
 				const apiCall = await fetch(quoteEndpoint)
 				const { quote } = await apiCall.json()
-				this.sendMessage(data.from.id, `${today}\nQuotes kamu pada hari ini adalah\n\n${quote}`)
+				this.sendMessage(data.from.id, `${checkTime()}\nQuotes kamu pada hari ini adalah\n\n${quote}`)
 			} catch (e) {
 				this.sendMessage(data.from.id, failedText)
 				this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
@@ -202,7 +201,7 @@ class SysoBot extends TelegramBot {
 					const GROUP = await dataGenerate[index].group
 					const SHIFT = await dataGenerate[index].shift
 					const DETAIL = await this.getGrup(GROUP,[],[],[],[],[])
-					this.sendMessage(callback.from.id, `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${today} :\n${DETAIL}\nBest Regards,\nGroup ${GROUP}`).then(() => {
+					this.sendMessage(callback.from.id, `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${checkTime()} :\n${DETAIL}\nBest Regards,\nGroup ${GROUP}`).then(() => {
 					this.sendMessage(callback.from.id, "Mau di teruskan data yang sudah ter generate ke grup Syso Community ?", {
 						reply_markup : {
 							inline_keyboard : choices
@@ -210,7 +209,7 @@ class SysoBot extends TelegramBot {
 					})
 					this.editMessageText(`Kamu memilih ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
 				})
-				komposisi = `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${today} :\n${DETAIL}\nBest Regards,\nGroup ${GROUP}`
+				komposisi = `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${checkTime()} :\n${DETAIL}\nBest Regards,\nGroup ${GROUP}`
 				this.removeItemDataGenerate(callback.from.id)
 				} else if (callback.data === "halfteam") {
 					this.editMessageText(`Kamu memilih ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
@@ -278,8 +277,8 @@ class SysoBot extends TelegramBot {
 				const TRAINING = dataGenerate[index].inputTraining
 				this.sendMessage(data.from.id, `data training inisial ${TRAINING} berhasil ditambahkan`).then(() => {
 						this.sendMessage(data.from.id, `Processing Data....`).then(async() => {
-							this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${today} :\n${await this.getGrup(GROUP,SAKIT,IZIN,CUTI,LPT,TRAINING)}\nBest Regards,\nGroup ${GROUP}`).then(async () => {
-								komposisi = `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${today} :\n${await this.getGrup(GROUP,SAKIT,IZIN,CUTI,LPT,TRAINING)}\nBest Regards,\nGroup ${GROUP}`
+							this.sendMessage(data.from.id, `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${checkTime()} :\n${await this.getGrup(GROUP,SAKIT,IZIN,CUTI,LPT,TRAINING)}\nBest Regards,\nGroup ${GROUP}`).then(async () => {
+								komposisi = `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${checkTime()} :\n${await this.getGrup(GROUP,SAKIT,IZIN,CUTI,LPT,TRAINING)}\nBest Regards,\nGroup ${GROUP}`
 								this.sendMessage(data.from.id, "Mau di teruskan ke grup Syso Community ?", {
 									reply_markup : {
 										inline_keyboard : choices
@@ -312,7 +311,7 @@ class SysoBot extends TelegramBot {
 					body: JSON.stringify(request)
 				})
 				apiCall.json().then(saa => {
-					this.sendMessage(data.from.id, `${today}\nPantun kamu pada hari ini adalah\n\n${saa.sampiran}\n${saa.isi}`)
+					this.sendMessage(data.from.id, `${checkTime()}\nPantun kamu pada hari ini adalah\n\n${saa.sampiran}\n${saa.isi}`)
 				})
 			} catch (e) {
 				this.sendMessage(data.from.id, failedText)
