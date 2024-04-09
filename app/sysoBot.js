@@ -9,7 +9,6 @@ class SysoBot extends TelegramBot {
 	constructor(token, options) {
 		super(token, options);
 		checkCommands(this)
-		console.log(checkTime())
 	}
 	sendPing(){
 		setInterval(() => {
@@ -120,7 +119,6 @@ class SysoBot extends TelegramBot {
 					}
 					dumpGempa.date = Tanggal
 					dumpGempa.time = Jam
-					console.log(dumpGempa)
 				} else {
 					clearInterval(duration)
 				}
