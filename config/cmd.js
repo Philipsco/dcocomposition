@@ -15,7 +15,8 @@ const cmd = {
     deleteDb :  /\/delete_db$/,
     delete : /^delete (.*)/,
     update  : /^update (.*) with (.*)$/,
-    insert : /^add (.*)/
+    insert : /^add (.*)/,
+    del : /^del\s*(\S*)/
 }
 
 module.exports = cmd;

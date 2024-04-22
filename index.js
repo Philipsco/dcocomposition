@@ -22,6 +22,7 @@ const main = () => {
   sysoBot.sendInfoGempaAuto()
   sysoBot.getGeneratePantun()
   sysoBot.sendPing()
+  sysoBot.deleteKomposisi()
 }
 
 main()

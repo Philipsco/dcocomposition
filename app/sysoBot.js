@@ -1,14 +1,15 @@
 const TelegramBot = require('node-telegram-bot-api');
 const commands = require("../config/cmd.js")
-const {groupBCA, choices, shiftTime, shifting, fullTeamOrNot, panduanText, greetText, hadirText, failedText, dataRandom, formatData} = require("../config/constant.js");
+const {groupBCA, choices, choiceToDelete, shiftTime, shifting, fullTeamOrNot, panduanText, greetText, hadirText, failedText, dataRandom, formatData} = require("../config/constant.js");
 const {checkTime,checkCommands} = require("../utils/utility.js")
 const {db} = require('../config/conn.js')
 let dataGenerate =[]
 let komposisi
 class SysoBot extends TelegramBot {
 	constructor(token, options) {
-		super(token, options);
+		super(token, options)
 		checkCommands(this)
+		db.connect()
 	}
 	sendPing(){
 		setInterval(() => {
@@ -139,6 +140,10 @@ class SysoBot extends TelegramBot {
 			inputLpt : null,
 			inputTraining : null
 		}
+		const paramsKomposisi = {
+			requestor : null,
+			messageId : null
+		}
 		this.onText(commands.generate, async (data) => {
 				await this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
 				this.sendMessage(data.from.id, `Halo kamu ingin melakukan generate komposisi grup untuk grup apa ya??`, {
@@ -165,8 +170,16 @@ class SysoBot extends TelegramBot {
 					})
 				} else if (callback.data === "true") {
 					const idSyso = await db.query(`SELECT userid FROM datauserid WHERE username=$1`, ['Syso Community'])
-					this.sendMessage(idSyso.rows[0].userid, await komposisi)
-					this.editMessageText("Komposisi sudah di kirim ke Syso Community", {chat_id : callback.from.id, message_id: callback.message.message_id})
+					await this.sendMessage(idSyso.rows[0].userid, await komposisi).then( dataAfter => {
+						paramsKomposisi.messageId = dataAfter.message_id
+						paramsKomposisi.requestor = dataAfter.chat.id
+						this.sendMessage(callback.from.id, "Komposisi yang sebelumnya dikirim mau dihapus ka ?",{
+							reply_markup: {
+								inline_keyboard : choiceToDelete
+							}
+						})
+					})
+					this.editMessageText(`Komposisi sudah di kirim ke Syso Community (${paramsKomposisi.messageId}/${paramsKomposisi.requestor})`, {chat_id : callback.from.id, message_id: callback.message.message_id})
 					komposisi = null
 				} else if (callback.data === "false") {
 					this.editMessageText("Baik, Terimakasih untuk konfirmasi nya", {chat_id : callback.from.id, message_id: callback.message.message_id})
@@ -212,6 +225,12 @@ class SysoBot extends TelegramBot {
 				} else if (callback.data === "halfteam") {
 					this.editMessageText(`Kamu memilih ${callback.data}`, {chat_id : callback.from.id, message_id: callback.message.message_id})
 					this.sendMessage(callback.from.id, "Masukkan inisial yang sedang sakit jika tidak ada dapat mencantumkan - \nContoh : sakit pbk,fkh atau sakit -\nFormat : sakit [inisial]")
+				} else if (callback.data === "deleted") {
+					this.deleteMessage(paramsKomposisi.requestor, paramsKomposisi.messageId)
+					this.editMessageText(`Delete Generate Komposisi di Grup BERHASIL`, {chat_id : callback.from.id, message_id: callback.message.message_id})
+				} else if (callback.data === "notDeleted") {
+					this.editMessageText(`Kamu telah memilih untuk tidak menghapus Generate komposisi pada grup`, {chat_id : callback.from.id, message_id: callback.message.message_id})
+					this.sendMessage(callback.from.id, "Jika kamu sudah terlanjur memilih untuk tidak menghapus, maka dapat mintakan PBK untuk menghapus komposisi di Grup Syso Community. Terimakasih")
 				} else {
 					this.sendMessage(callback.from.id, failedText)
 					this.removeItemDataGenerate(callback.from.id)
@@ -336,8 +355,8 @@ class SysoBot extends TelegramBot {
 					this.sendMessage(data.from.id, `inisial ${inisial} sudah ada pada database kami`)
 				} else {
 					leader === "TRUE" || leader==="TL" || leader==="YES" ? leader = true : leader = false
-          await db.query("INSERT INTO dataKaryawan (inisial, grup, role, leader, sites, id) VALUES ($1, $2,$3,$4, $5, $6)", [inisial, grup, role, leader, sites, Math.floor(Math.random() * 9999) + 107])
-          this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
+          await db.query("INSERT INTO dataKaryawan (inisial, grup, role, leader, sites) VALUES ($1, $2,$3,$4, $5)", [inisial, grup, role, leader, sites])
+					this.sendMessage(data.from.id, `inisial ${inisial} berhasil ditambahkan pada database kami`)
 				} 
 			} catch (error) {
 				this.sendMessage(936687738,`${error} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
@@ -623,6 +642,13 @@ class SysoBot extends TelegramBot {
 			} catch (error) {
 				this.sendMessage(936687738,`${error} pada saat generate getGroup()`)
 			}
+	}
+
+	deleteKomposisi(){
+		this.onText(commands.del, async (data, after) => {
+			let [messageId, userId] = after[1].split("/")
+			this.deleteMessage(userId, messageId)
+		})
 	}
 }
 

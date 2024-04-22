@@ -8,21 +8,21 @@ const SHIFT_3 = '3'
 const failedText = "Gagal memuat data yang diminta, silahkan coba lagi atau hubungi PBK😢"
 
 const dataRandom = [
-  "Manteb banget support nya GSIT BCA",
-  "Terimakasih untuk supportnya rekan GSIT yang baik hati",
+  "Manteb banget support nya rekan",
+  "Terimakasih untuk supportnya rekan yang baik hati",
   "Major incident, Sudah mulai berangsur normal",
-  "Mau info untuk incident sudah aman dan normal kembali terima kasih ",
+  "Mau info untuk incident sudah aman dan normal kembali terimakasih ",
   "semoga group POMI ini sepi dan damai",
   "Duhai tim gsit makin elegan, terimakasih dan sampai jumpa",
   "Walaupun failure QR masih terjadi, setidaknya sudah semakin membaik",
   "Semoga mulai hari ini, APM QR tidak bedarah kembali",
-  "E-Channel sudah normal kembali gan, mantap",
+  "E-Channel sudah normal kembali gan",
   "terimakasih banyak atas supportnya",
-  "terus terang terus team",
+  "terus terang terus tim",
   "terimakasih dan selamat melanjutkan aktivitas",
   "terimakasih",
   "terimakasih, kendala selesai dengan tuntas",
-  "arigato gozaimas rekan",
+  "arigato gozaimas kak",
   "terimakasih orang baik",
   "kendala selesai dengan tuntas",
   "sehat sehat terus orang baik",
@@ -68,6 +68,19 @@ const choices = [
     }
   ]
 ]
+
+const choiceToDelete =[[
+  {
+    text: "Ya, tolong HAPUS dari grup",
+    callback_data: "deleted"
+  }
+],
+[
+  {
+    text: "Tidak perlu di hapus ya",
+    callback_data: "notDeleted"
+  }
+]]
 
 const shifting = [
   [
@@ -158,4 +171,4 @@ ${sumToday}
   return format
 }
 
-module.exports = {groupBCA, choices, shiftTime, shifting, fullTeamOrNot, panduanText, greetText, hadirText, failedText, dataRandom,formatData}
+module.exports = {groupBCA, choices, choiceToDelete, shiftTime, shifting, fullTeamOrNot, panduanText, greetText, hadirText, failedText, dataRandom,formatData}
