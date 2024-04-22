@@ -9,7 +9,7 @@ const db = new Client({
     password: process.env.DB_PASSWORD, 
     port: process.env.DB_PORT, 
     host: process.env.DB_HOST,
-    connectionTimeoutMillis: 2000,
+    connectionTimeoutMillis: 30000,
     ssl: {
       rejectUnauthorized: true,
       ca : fs.readFileSync('./utils/ca.pem').toString()
