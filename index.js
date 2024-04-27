@@ -1,7 +1,6 @@
 const Bots = require('./app/sysoBot.js')
 const express = require('express')
 const app = express()
-const port = 3000
 const env = require("dotenv")
 env.config()
 
@@ -29,9 +28,7 @@ const main = () => {
 }
 
 app.get('/health', (req, res) => {
-  res.send('PING CONNECTION')
+  res.sendStatus(200)
 })
-app.listen(port, ()=> {
-  console.log(`cli-nodejs-api listening at PORT : ${port}`)
-})
+
 main()
