@@ -24,7 +24,6 @@ const main = () => {
   sysoBot.getEathquake()
   sysoBot.sendInfoGempaAuto()
   sysoBot.getGeneratePantun()
-  sysoBot.sendPing()
   sysoBot.deleteKomposisi()
 }
 

@@ -11,12 +11,6 @@ class SysoBot extends TelegramBot {
 		checkCommands(this)
 		db.connect()
 	}
-	sendPing(){
-		setInterval(() => {
-			this.sendMessage(936687738,`BOT masih Berjalan normal rekan`)
-		}, 60*60*1000);
-		
-	}
 
   async checkAndInsertDbUserId(userId, name){
 		try {
