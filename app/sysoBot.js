@@ -607,6 +607,8 @@ class SysoBot extends TelegramBot {
       let gassysoSorted = sortTL(gassyso)
       let wsadcmonSorted = sortTL(wsadcmon)
       let wsasysoSorted = sortTL(wsasyso)
+			let gacsysoSorted = sortTL(gacsyso)
+			let gacdcmonSorted = sortTL(gacdcmon)
       defaultValue(mbcasakit)
       defaultValue(mbcacuti)
       defaultValue(mbcaizin)
@@ -631,7 +633,7 @@ class SysoBot extends TelegramBot {
 			let data = formatData(mbcasl,mbcasysoSorted,mbcadcmonSorted,mbcasoc,mbcasakit,mbcacuti,mbcaizin,
 				wsasl,wsasysoSorted,wsadcmonSorted,wsasoc,wsasakit,wsacuti,wsaizin,
         gassl,gassysoSorted,gasdcmonSorted,gassoc,gassakit,gascuti,gasizin,
-        gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining, sumToday)
+        gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining, sumToday, gacsysoSorted, gacdcmonSorted)
 				return data
 			} catch (error) {
 				this.sendMessage(936687738,`${error} pada saat generate getGroup()`)

@@ -148,7 +148,7 @@ const hadirText = `
 Apakah member grup masuk semua??
 `
 
-const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining,sumToday)=>{
+const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining,sumToday,gacsyso,gacdcmon)=>{
   let format = `
 #MBCA
 Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], DCMon [ ${mbcadcmon} ], SOC [ ${mbcasoc} ]
@@ -163,7 +163,7 @@ Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
 Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ], LPT [ ${gaslpt} ], Training [ ${gastraining} ]
 __________________________
 #GAC
-Hadir : ${gacsl}, SOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
+Hadir : ${gacsl}, Syso [ ${gacsyso} ], DCMon [ ${gacdcmon} ], SOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
 Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ], LPT [ ${gaclpt} ], Training [ ${gactraining} ]
 __________________________
 ${sumToday}
