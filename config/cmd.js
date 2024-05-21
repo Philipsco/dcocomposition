@@ -16,7 +16,8 @@ const cmd = {
     delete : /^delete (.*)/,
     update  : /^update (.*) with (.*)$/,
     insert : /^add (.*)/,
-    del : /^del\s*(\S*)/
+    del : /^del (.*)/,
+    add : /^tambah (.*)/
 }
 
 module.exports = cmd;

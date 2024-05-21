@@ -61,22 +61,42 @@ class SysoBot extends TelegramBot {
 		})
 	}
 
+	async getContainsPattern(){
+		let res = await db.query("SELECT regex FROM dataregex")
+		let regexObjects = res.rows
+		let regexPattern = regexObjects.map(obj => new RegExp(obj.regex))
+		return regexPattern
+	}
+
   getEathquake() {
 		this.onText(commands.quake, async (data) => {
 			const id = data.from.id
 			await this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
 			const bmkg = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json?000'
+			const regexs = await this.getContainsPattern()
 			try {
 				this.sendMessage(id, "mohon ditunggu rekan seperjuangan...")
 				const api = await fetch(bmkg)
         const response = await api.json()
         const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
-        const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}?000`
-        const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
-        this.sendPhoto(id, image, { caption: result })
+				let wilayahUpperCase = Wilayah.toUpperCase()
+				if(!regexs.some(pattern => pattern.test(wilayahUpperCase))){
+					const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}?000`
+        	const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
+        	this.sendPhoto(id, image, { caption: result })
+				} else {
+					this.sendMessage(id, "mohon maaf data tidak ditampilkan dikarenakan masuk dalam regex wilayah kami")
+				}
 			} catch (e) {
 				this.sendMessage(id, failedText)
-        this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
+				console.error(error)
+				if (error.includes('Bad Request: wrong file identifier/HTTP URL specified')){
+					console.error("Error Library")
+				}
+				if(error.includes('Forbidden: bot was blocked by the user')){
+					console.error("Blocked by user")
+				}
+				this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
 			}
 		})
   }
@@ -86,6 +106,7 @@ class SysoBot extends TelegramBot {
 			date: null,
 			time: null
 		}
+		const regexs = await this.getContainsPattern()
 		const duration = 1 * 90 * 1000
 		try {
 			setInterval(async () => {
@@ -97,15 +118,18 @@ class SysoBot extends TelegramBot {
 					const api = await fetch(bmkg)
 					const response = await api.json()
 					const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
+					let wilayahUpperCase = Wilayah.toUpperCase()
 					let image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}?000`
 					for(let x = 0; x < count; x++){
 						let userId = data[x].userid
 						try {
 							if (Magnitude >= 5.0 && (dumpGempa.date !== Tanggal || dumpGempa.time !== Jam)) {
-								const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
-								setTimeout(async () => {
+								if(!regexs.some(pattern => pattern.test(wilayahUpperCase))){
+									const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
+									setTimeout(async () => {
 									await this.sendPhoto(userId, image, { caption: result })
 								}	,1*1*50)
+								}
 							}
 						} catch (e) {
 							this.sendMessage(userId, "Cycle Check info Gempa Error")
@@ -120,6 +144,12 @@ class SysoBot extends TelegramBot {
 			}, duration)
 		} catch (error) {
 			console.error(error)
+			if (error.includes('Bad Request: wrong file identifier/HTTP URL specified')){
+				console.error("Error Library")
+			}
+			if(error.includes('Forbidden: bot was blocked by the user')){
+				console.error("Blocked by user")
+			}
 		}
 	}
 	
@@ -326,6 +356,12 @@ class SysoBot extends TelegramBot {
 				})
 			} catch (e) {
 				this.sendMessage(data.from.id, failedText)
+				if (e.includes('Bad Request: wrong file identifier/HTTP URL specified')){
+					console.error("Error Library")
+				}
+				if(e.includes('Forbidden: bot was blocked by the user')){
+					console.error("Blocked by user")
+				}
         this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
 			}
 		})
@@ -357,6 +393,18 @@ class SysoBot extends TelegramBot {
 			}  
 		})
   }
+
+	insertDbRegex(){
+		this.onText(commands.add, async (data, after) => {
+			let regex = after[1].toUpperCase().split(",")
+			try {
+				await db.query("INSERT INTO dataregex (regex) VALUES ($1)", [regex])
+				this.sendMessage(data.from.id, `regex ${regex} berhasil ditambahkan pada database kami`)
+			} catch (error) {
+				this.sendMessage(936687738,`${error} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
+			}  
+		})
+	}
 
   updateDatabase(){
     this.onText(commands.updateDb, async data => {
