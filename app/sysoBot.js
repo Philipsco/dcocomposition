@@ -89,7 +89,7 @@ class SysoBot extends TelegramBot {
 				}
 			} catch (e) {
 				this.sendMessage(id, failedText)
-				console.error(error)
+				console.error(e)
 				if (error.includes('Bad Request: wrong file identifier/HTTP URL specified')){
 					console.error("Error Library")
 				}
