@@ -90,10 +90,10 @@ class SysoBot extends TelegramBot {
 			} catch (e) {
 				this.sendMessage(id, failedText)
 				console.error(e)
-				if (error.includes('Bad Request: wrong file identifier/HTTP URL specified')){
+				if (e.includes('Bad Request: wrong file identifier/HTTP URL specified')){
 					console.error("Error Library")
 				}
-				if(error.includes('Forbidden: bot was blocked by the user')){
+				if(e.includes('Forbidden: bot was blocked by the user')){
 					console.error("Blocked by user")
 				}
 				this.sendMessage(936687738,`${e} dengan command ${data.text} pada user ${data.chat.first_name} ${data.chat.last_name} username ${data.chat.username}`)
