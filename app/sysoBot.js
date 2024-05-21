@@ -72,7 +72,7 @@ class SysoBot extends TelegramBot {
 		this.onText(commands.quake, async (data) => {
 			const id = data.from.id
 			await this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
-			const bmkg = `https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json/`
+			const bmkg = "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json/"
 			const regexs = await this.getContainsPattern()
 			try {
 				this.sendMessage(id, "mohon ditunggu rekan seperjuangan...")
@@ -103,7 +103,7 @@ class SysoBot extends TelegramBot {
 		const duration = 1 * 90 * 1000
 		try {
 			setInterval(async () => {
-				const bmkg = `https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json/`
+				const bmkg = "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json/"
 				const res = await db.query("SELECT userid FROM datauserid")
 				const count = res.rowCount
 				let data = res.rows
