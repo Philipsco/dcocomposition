@@ -72,7 +72,7 @@ class SysoBot extends TelegramBot {
 		this.onText(commands.quake, async (data) => {
 			const id = data.from.id
 			await this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
-			const bmkg = "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json/"
+			const bmkg = "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json"
 			const regexs = await this.getContainsPattern()
 			try {
 				this.sendMessage(id, "mohon ditunggu rekan seperjuangan...")
@@ -81,7 +81,7 @@ class SysoBot extends TelegramBot {
         const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
 				let wilayahUpperCase = Wilayah.toUpperCase()
 				if(!regexs.some(pattern => pattern.test(wilayahUpperCase))){
-					const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}/`
+					const image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}`
         	const result = `Dear All,\nBerikut kami informasikan gempa terbaru berdasarkan data BMKG:\n\n${Tanggal} | ${Jam}\nWilayah: ${Wilayah}\nBesar: ${Magnitude} SR\nKedalaman: ${Kedalaman}\nPotensi: ${Potensi}`
         	this.sendPhoto(id, image, { caption: result })
 				} else {
@@ -103,7 +103,7 @@ class SysoBot extends TelegramBot {
 		const duration = 1 * 90 * 1000
 		try {
 			setInterval(async () => {
-				const bmkg = "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json/"
+				const bmkg = "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json"
 				const res = await db.query("SELECT userid FROM datauserid")
 				const count = res.rowCount
 				let data = res.rows
@@ -112,7 +112,7 @@ class SysoBot extends TelegramBot {
 					const response = await api.json()
 					const { Kedalaman, Magnitude, Wilayah, Potensi, Tanggal, Jam, Shakemap } = response.Infogempa.gempa
 					let wilayahUpperCase = Wilayah.toUpperCase()
-					let image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}/`
+					let image = `https://data.bmkg.go.id/DataMKG/TEWS/${Shakemap}`
 					for(let x = 0; x < count; x++){
 						let userId = data[x].userid
 						try {
