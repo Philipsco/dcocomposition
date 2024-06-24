@@ -22,7 +22,7 @@ const main = () => {
   sysoBot.deleteDatabase()
   sysoBot.updateDatabase()
   sysoBot.getEathquake()
-  sysoBot.sendInfoGempaAuto()
+  // sysoBot.sendInfoGempaAuto()
   sysoBot.getGeneratePantun()
   sysoBot.deleteKomposisi()
 }
