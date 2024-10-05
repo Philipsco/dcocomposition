@@ -151,20 +151,20 @@ Apakah member grup masuk semua??
 const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining,sumToday,gacsyso,gacdcmon)=>{
   let format = `
 #MBCA
-Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], SOC [ ${mbcasoc} ]
-Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ], LPT [ ${mbcalpt} ], Training [ ${mbcatraining} ]
+<blockquote>Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], SOC [ ${mbcasoc} ]
+Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ], LPT [ ${mbcalpt} ], Training [ ${mbcatraining} ]</blockquote>
 __________________________
 #WSA2
-Hadir : ${wsasl}, Syso [ ${wsasyso} ], SOC [ ${wsasoc} ], FM [ ${wsafm} ]
-Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ], LPT [ ${wsalpt} ], Training [ ${wsatraining} ]
+<blockquote>Hadir : ${wsasl}, Syso [ ${wsasyso} ], SOC [ ${wsasoc} ], FM [ ${wsafm} ]
+Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ], LPT [ ${wsalpt} ], Training [ ${wsatraining} ]</blockquote>
 __________________________
 #GAS
-Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
-Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ], LPT [ ${gaslpt} ], Training [ ${gastraining} ]
+<blockquote>Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
+Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ], LPT [ ${gaslpt} ], Training [ ${gastraining} ]</blockquote>
 __________________________
 #GAC
-Hadir : ${gacsl}, DCMon [ ${gacdcmon} ], SOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
-Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ], LPT [ ${gaclpt} ], Training [ ${gactraining} ]
+<blockquote>Hadir : ${gacsl}, DCMon [ ${gacdcmon} ], SOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
+Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ], LPT [ ${gaclpt} ], Training [ ${gactraining} ]</blockquote>
 __________________________
 ${sumToday}
 `
