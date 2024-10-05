@@ -229,7 +229,7 @@ class SysoBot extends TelegramBot {
 					const GROUP = await dataGenerate[index].group
 					const SHIFT = await dataGenerate[index].shift
 					const DETAIL = await this.getGrup(GROUP,[],[],[],[],[])
-					this.sendMessage(callback.from.id, `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${checkTime()} :\n${DETAIL}\nBest Regards,\nGroup ${GROUP}`).then(() => {
+					this.sendMessage(callback.from.id, `Dear All\nBerikut #KomposisiGroup${GROUP} Shift ${SHIFT} pada ${checkTime()} :\n${DETAIL}\nBest Regards,\nGroup ${GROUP}`, parse_mode='HTML').then(() => {
 					this.sendMessage(callback.from.id, "Mau di teruskan data yang sudah ter generate ke grup Syso Community ?", {
 						reply_markup : {
 							inline_keyboard : choices
