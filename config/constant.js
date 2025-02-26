@@ -151,19 +151,19 @@ Apakah member grup masuk semua??
 const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining,sumToday,gacsyso,gacdcmon)=>{
   let format = `
 #MBCA
-Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], SOC [ ${mbcasoc} ]
+Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], NOC [ ${mbcasoc} ]
 Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ], LPT [ ${mbcalpt} ], Training [ ${mbcatraining} ]
 __________________________
 #WSA2
-Hadir : ${wsasl}, Syso [ ${wsasyso} ], SOC [ ${wsasoc} ], FM [ ${wsafm} ]
+Hadir : ${wsasl}, Syso [ ${wsasyso} ], NOC [ ${wsasoc} ], FM [ ${wsafm} ]
 Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ], LPT [ ${wsalpt} ], Training [ ${wsatraining} ]
 __________________________
 #GAS
-Hadir : ${gassl}, Syso [ ${gassyso} ], DCMon [ ${gasdcmon} ], SOC [ ${gassoc} ]
+Hadir : ${gassl}, Syso [ ${gassyso} ], DART [ ${gasdcmon} ], NOC [ ${gassoc} ]
 Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ], LPT [ ${gaslpt} ], Training [ ${gastraining} ]
 __________________________
 #GAC
-Hadir : ${gacsl}, DCMon [ ${gacdcmon} ], SOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
+Hadir : ${gacsl}, DART [ ${gacdcmon} ], NOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
 Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ], LPT [ ${gaclpt} ], Training [ ${gactraining} ]
 __________________________
 ${sumToday}
