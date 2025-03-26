@@ -368,7 +368,7 @@ class SysoBot extends TelegramBot {
 	insertDatabase() {
 		this.onText(commands.insertDb, async data => {
 			await this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
-			this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\nadd [inisial],[grup],[syso/dcmon],[TL?],[site]\n\nContoh : \nadd PBK,A,DCMon,true,MBCA")
+			this.sendMessage(data.from.id, "Silahkan masukan data yang ingin diinput dengan format sebagai berikut.\nadd [inisial],[grup],[syso/dart],[TL?],[site]\n\nContoh : \nadd PBK,A,DART,true,MBCA")
 		})
 		this.onText(commands.insert, async (data, after) => {
 			let [inisial, grup, role, leader, sites] = after[1].toUpperCase().split(",")
@@ -402,7 +402,7 @@ class SysoBot extends TelegramBot {
   updateDatabase(){
     this.onText(commands.updateDb, async data => {
 			await this.checkAndInsertDbUserId(data.chat.id, data.chat.first_name)
-      this.sendMessage(data.from.id, "Silahkan masukan data yang ingin di update dengan format sebagai berikut.\nupdate[inisial] with [grup],[syso/dcmon],[site]\n\nContoh : \nupdate PBK with A,DCMon,MBCA")
+      this.sendMessage(data.from.id, "Silahkan masukan data yang ingin di update dengan format sebagai berikut.\nupdate[inisial] with [grup],[syso/dart],[site]\n\nContoh : \nupdate PBK with A,DART,MBCA")
     })
 		this.onText(commands.update, async (data, after) => {
 			let inisial = after[1].toUpperCase()
@@ -439,10 +439,10 @@ class SysoBot extends TelegramBot {
   }
 
 	async getGrup(group,sakit,izin,cuti,lpt,training){
-		let mbcasyso =[];let mbcadcmon = [];let mbcasl = [];let mbcasoc = [];let mbcaizin =[];let mbcasakit =[];let mbcacuti =[]; let mbcalpt =[]; let mbcatraining = [];
-    let wsasyso =[];let wsadcmon = [];let wsasl = [];let wsasoc = [];let wsaizin =[];let wsasakit =[];let wsacuti =[]; let wsafm = []; let wsalpt =[]; let wsatraining = [];
-    let gassyso =[];let gasdcmon = [];let gassl = [];let gassoc = [];let gascuti =[];let gasizin =[];let gassakit =[]; let gaslpt =[]; let gastraining = [];
-    let gacfoc =[];let gacsl = [];let gacsyso = [];let gacdcmon = [];let gacsoc = [];let gacizin =[];let gacsakit =[];let gaccuti =[]; let gaclpt =[]; let gactraining = [];
+		let mbcasyso =[];let mbcadart = [];let mbcasl = [];let mbcanoc = [];let mbcaizin =[];let mbcasakit =[];let mbcacuti =[]; let mbcalpt =[]; let mbcatraining = [];
+    let wsasyso =[];let wsadart = [];let wsasl = [];let wsanoc = [];let wsaizin =[];let wsasakit =[];let wsacuti =[]; let wsafm = []; let wsalpt =[]; let wsatraining = [];
+    let gassyso =[];let gasdart = [];let gassl = [];let gasnoc = [];let gascuti =[];let gasizin =[];let gassakit =[]; let gaslpt =[]; let gastraining = [];
+    let gacfoc =[];let gacsl = [];let gacsyso = [];let gacdart = [];let gacnoc = [];let gacizin =[];let gacsakit =[];let gaccuti =[]; let gaclpt =[]; let gactraining = [];
 		let sumToday = "Summary : ";
     const resgrup = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND NOT(inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4) OR inisial = ANY($5) OR inisial = ANY($6))", [group,sakit,izin,cuti,lpt,training])
     const resKeterangan = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND (inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4) OR inisial = ANY($5) OR inisial = ANY($6))", [group,sakit,izin,cuti,lpt,training])
@@ -482,14 +482,14 @@ class SysoBot extends TelegramBot {
 							case 'SYSO':
 								resgrup.rows[x].leader === true ? mbcasyso.push(pushData+ ` (TL)`): mbcasyso.push(pushData)
 								break
-							case 'DCMON':
-								resgrup.rows[x].leader === true ? mbcadcmon.push(pushData+ ` (TL)`): mbcadcmon.push(pushData)
+							case 'DART':
+								resgrup.rows[x].leader === true ? mbcadart.push(pushData+ ` (TL)`): mbcadart.push(pushData)
 								break
 							case 'SL':
 								mbcasl.push(pushData+ ` (SL)`)
 								break
-							case 'SOC':
-								mbcasoc.push(pushData)
+							case 'NOC':
+								mbcanoc.push(pushData)
 								break
 							default:
 								break
@@ -500,14 +500,14 @@ class SysoBot extends TelegramBot {
 							case 'SYSO':
 								resgrup.rows[x].leader === true ? wsasyso.push(pushData+ ` (TL)`): wsasyso.push(pushData)
 								break
-							case 'DCMON':
-								resgrup.rows[x].leader === true ? wsadcmon.push(pushData+ ` (TL)`): wsadcmon.push(pushData)
+							case 'DART':
+								resgrup.rows[x].leader === true ? wsadart.push(pushData+ ` (TL)`): wsadart.push(pushData)
 								break
 							case 'SL':
 								wsasl.push(pushData+ ` (SL)`)
 								break
-							case 'SOC':
-                wsasoc.push(pushData)
+							case 'NOC':
+                wsanoc.push(pushData)
                 break
 							case 'FM':
 								wsafm.push(pushData)
@@ -521,14 +521,14 @@ class SysoBot extends TelegramBot {
 							case 'SYSO':
 								resgrup.rows[x].leader === true ? gassyso.push(pushData+ ` (TL)`): gassyso.push(pushData)
 								break
-							case 'DCMON':
-                resgrup.rows[x].leader === true ? gasdcmon.push(pushData+ ` (TL)`): gasdcmon.push(pushData)
+							case 'DART':
+                resgrup.rows[x].leader === true ? gasdart.push(pushData+ ` (TL)`): gasdart.push(pushData)
                 break
 							case 'SL':
 								gassl.push(pushData+ ` (SL)`)
 								break
-							case 'SOC':
-								gassoc.push(pushData)
+							case 'NOC':
+								gasnoc.push(pushData)
 								break
 							default:
 								break
@@ -539,14 +539,14 @@ class SysoBot extends TelegramBot {
 							case 'SYSO':
                 resgrup.rows[x].leader === true ? gacsyso.push(pushData+ ` (TL)`): gacsyso.push(pushData)
                 break
-							case 'DCMON':
-								resgrup.rows[x].leader === true ? gacdcmon.push(pushData+ ` (TL)`): gacdcmon.push(pushData)
+							case 'DART':
+								resgrup.rows[x].leader === true ? gacdart.push(pushData+ ` (TL)`): gacdart.push(pushData)
 								break
 							case 'SL':
 								gacsl.push(pushData+ ` (SL)`)
 								break
-							case 'SOC':
-								resgrup.rows[x].leader === true ? gacsoc.push(pushData+ ` (TL)`): gacsoc.push(pushData)
+							case 'NOC':
+								resgrup.rows[x].leader === true ? gacnoc.push(pushData+ ` (TL)`): gacnoc.push(pushData)
 								break
 							case 'FOC':
 								gacfoc.push(pushData)
@@ -642,14 +642,14 @@ class SysoBot extends TelegramBot {
       defaultValueSL(wsasl)
       defaultValueSL(gassl)
       defaultValueSL(gacsl)
-      let mbcadcmonSorted = sortTL(mbcadcmon)
+      let mbcadartSorted = sortTL(mbcadart)
       let mbcasysoSorted = sortTL(mbcasyso)
-      let gasdcmonSorted = sortTL(gasdcmon)
+      let gasdartSorted = sortTL(gasdart)
       let gassysoSorted = sortTL(gassyso)
-      let wsadcmonSorted = sortTL(wsadcmon)
+      let wsadartSorted = sortTL(wsadart)
       let wsasysoSorted = sortTL(wsasyso)
 			let gacsysoSorted = sortTL(gacsyso)
-			let gacdcmonSorted = sortTL(gacdcmon)
+			let gacdartSorted = sortTL(gacdart)
       defaultValue(mbcasakit)
       defaultValue(mbcacuti)
       defaultValue(mbcaizin)
@@ -671,10 +671,10 @@ class SysoBot extends TelegramBot {
 			defaultValue(gaclpt)
 			defaultValue(gactraining)
 			sumToday = sumToday.slice(0, -2)
-			let data = formatData(mbcasl,mbcasysoSorted,mbcadcmonSorted,mbcasoc,mbcasakit,mbcacuti,mbcaizin,
-				wsasl,wsasysoSorted,wsadcmonSorted,wsasoc,wsasakit,wsacuti,wsaizin,
-        gassl,gassysoSorted,gasdcmonSorted,gassoc,gassakit,gascuti,gasizin,
-        gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining, sumToday, gacsysoSorted, gacdcmonSorted)
+			let data = formatData(mbcasl,mbcasysoSorted,mbcadartSorted,mbcanoc,mbcasakit,mbcacuti,mbcaizin,
+				wsasl,wsasysoSorted,wsadartSorted,wsanoc,wsasakit,wsacuti,wsaizin,
+        gassl,gassysoSorted,gasdartSorted,gasnoc,gassakit,gascuti,gasizin,
+        gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacnoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining, sumToday, gacsysoSorted, gacdartSorted)
 				return data
 			} catch (error) {
 				this.sendMessage(936687738,`${error} pada saat generate getGroup()`)

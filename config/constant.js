@@ -148,22 +148,22 @@ const hadirText = `
 Apakah member grup masuk semua??
 `
 
-const formatData = (mbcasl,mbcasyso,mbcadcmon,mbcasoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadcmon,wsasoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdcmon,gassoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacsoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining,sumToday,gacsyso,gacdcmon)=>{
+const formatData = (mbcasl,mbcasyso,mbcadart,mbcanoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadart,wsanoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdart,gasnoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacnoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining,sumToday,gacsyso,gacdart)=>{
   let format = `
 #MBCA
-Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], NOC [ ${mbcasoc} ]
+Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], NOC [ ${mbcanoc} ]
 Tidak Hadir : Sakit [ ${mbcasakit} ], Cuti [ ${mbcacuti} ], Izin [ ${mbcaizin} ], LPT [ ${mbcalpt} ], Training [ ${mbcatraining} ]
 __________________________
 #WSA2
-Hadir : ${wsasl}, Syso [ ${wsasyso} ], NOC [ ${wsasoc} ], FM [ ${wsafm} ]
+Hadir : ${wsasl}, Syso [ ${wsasyso} ], NOC [ ${wsanoc} ], FM [ ${wsafm} ]
 Tidak Hadir : Sakit [ ${wsasakit} ], Cuti [ ${wsacuti} ], Izin [ ${wsaizin} ], LPT [ ${wsalpt} ], Training [ ${wsatraining} ]
 __________________________
 #GAS
-Hadir : ${gassl}, Syso [ ${gassyso} ], DART [ ${gasdcmon} ], NOC [ ${gassoc} ]
+Hadir : ${gassl}, Syso [ ${gassyso} ], DART [ ${gasdart} ], NOC [ ${gasnoc} ]
 Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ], LPT [ ${gaslpt} ], Training [ ${gastraining} ]
 __________________________
 #GAC
-Hadir : ${gacsl}, DART [ ${gacdcmon} ], NOC [ ${gacsoc} ],FOC [ ${gacfoc} ]
+Hadir : ${gacsl}, DART [ ${gacdart} ], NOC [ ${gacnoc} ],FOC [ ${gacfoc} ]
 Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ], LPT [ ${gaclpt} ], Training [ ${gactraining} ]
 __________________________
 ${sumToday}
