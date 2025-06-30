@@ -163,7 +163,7 @@ Hadir : ${gassl}, Syso [ ${gassyso} ], DART [ ${gasdart} ], NOC [ ${gasnoc} ]
 Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ], LPT [ ${gaslpt} ], Training [ ${gastraining} ]
 __________________________
 #GAC
-Hadir : ${gacsl}, DART [ ${gacdart} ], NOC [ ${gacnoc} ],FOC [ ${gacfoc} ]
+Hadir : ${gacsl}, DART [ ${gacdart} ], NOC [ ${gacnoc} ],FOC [ ${gacfoc} ], Syso [ ${gacsyso} ]
 Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ], LPT [ ${gaclpt} ], Training [ ${gactraining} ]
 __________________________
 ${sumToday}
