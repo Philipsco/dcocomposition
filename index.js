@@ -35,19 +35,19 @@ app.use(express.json());
 app.get("/oasing", async (req, res) => {
   try {
     const result = await sysoBot.getDoneFollowup();
-    res.sendStatus(200).json(result);
+    return res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 })
 
 app.post("/oasing", async (req, res) => {
   try {
     const { data } = req.body
-    await sysoBot.postFollowup(data)
-    res.status(200)
+    const result = await sysoBot.postFollowup(data)
+    return res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 })
 
