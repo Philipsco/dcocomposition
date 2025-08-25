@@ -687,6 +687,26 @@ class SysoBot extends TelegramBot {
 			this.deleteMessage(userId, messageId)
 		})
 	}
+
+	async getDoneFollowup(){
+		try {
+			 const data = await db.query("SELECT followup FROM oasing")
+			 return data.rows[0]
+		} catch (error) {
+			this.sendMessage(936687738,`${error} dari service getDoneFollowup`)
+			throw error
+		}
+	}
+
+	async postFollowup(status){
+		try {
+			const dated = new Date()
+			await db.query("UPDATE oasing SET followup = $1, date = $2", [status, dated])
+		} catch (error) {
+			this.sendMessage(936687738,`${error} dari service postFollowup`)
+			throw error
+		}
+	}
 }
 
 module.exports = SysoBot;

@@ -31,6 +31,26 @@ app.get("/health", (req, res) => {
   res.sendStatus(200)
 })
 
+app.use(express.json());
+app.get("/oasing", async (req, res) => {
+  try {
+    const result = await sysoBot.getDoneFollowup();
+    res.sendStatus(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+app.post("/oasing", async (req, res) => {
+  try {
+    const { data } = req.body
+    await sysoBot.postFollowup(data)
+    res.status(200)
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
 app.listen(port, ()=>{
   console.log(`cli-nodejs-api listening at ${port}`)
 })
