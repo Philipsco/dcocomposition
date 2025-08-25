@@ -701,7 +701,13 @@ class SysoBot extends TelegramBot {
 	async postFollowup(status){
 		try {
 			const dated = new Date()
-			await db.query("UPDATE oasing SET followup = $1, date = $2", [status, dated])
+			const result = await db.query("UPDATE oasing SET followup = $1, date = $2", [status, dated])
+
+			if (result.rowCount === 0) {
+      throw new Error("Tidak ada data yang diupdate");
+    }
+
+    return result.rows[0];
 		} catch (error) {
 			this.sendMessage(936687738,`${error} dari service postFollowup`)
 			throw error
