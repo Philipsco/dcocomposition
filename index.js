@@ -1,5 +1,6 @@
 const Bots = require('./app/sysoBot.js')
 const express = require('express')
+const cors = require("cors")
 const app = express()
 const port = process.env.PORT || 3000
 const env = require("dotenv")
@@ -39,8 +40,8 @@ app.get("/oasing", async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 })
-
-app.use(express.json());
+app.use(cors())
+app.use(express.json())
 app.post("/oasing", async (req, res) => {
   try {
     const { data } = req.body
