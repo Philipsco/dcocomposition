@@ -28,6 +28,14 @@ const main = () => {
   sysoBot.deleteKomposisi()
 }
 
+app.use(cors())
+app.use(express.json())
+
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+});
+
 app.get("/health", (req, res) => {
   res.sendStatus(200)
 })
@@ -40,8 +48,7 @@ app.get("/oasing", async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 })
-app.use(cors())
-app.use(express.json())
+
 app.post("/oasing", async (req, res) => {
   try {
     const { data } = req.body
