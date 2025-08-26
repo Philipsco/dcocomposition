@@ -52,20 +52,16 @@ app.get("/oasing", async (req, res) => {
 app.post("/oasing", async (req, res) => {
   try {
     const { data } = req.body
-
     if(data === true || data === "true") {
       const result = await sysoBot.postFollowup(true)
-      return res.status(200).json(result);
+      return res.status(200).json(result)
     } else if (data === false || data === "false") {
       const result = await sysoBot.postFollowup(false)
-      return res.status(200).json(result);
+      return res.status(200).json(result)
     } else {
       console.log(`${data} bukan boolean (?)`)
-      return res.status(400).json({ success: false, message: "Data harus true / false" });
+      return res.status(400).json({ success: false, message: "Data harus true / false" })
     }
-
-
-    
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

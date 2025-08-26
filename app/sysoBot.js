@@ -706,7 +706,6 @@ class SysoBot extends TelegramBot {
 			if (result.rowCount === 0) {
       throw new Error("Tidak ada data yang diupdate");
     }
-
     return result.rows[0];
 		} catch (error) {
 			this.sendMessage(936687738,`${error} dari service postFollowup`)
