@@ -9,8 +9,7 @@ env.config()
 const botToken = process.env.BOT_TOKEN
 const sysoBot = new Bots(botToken, {polling: {
   params: {
-    limit: 1,
-    offset: 2
+    limit: 100
   }
 }});
 
