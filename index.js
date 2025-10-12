@@ -25,49 +25,44 @@ const main = () => {
   // sysoBot.sendInfoGempaAuto()
   sysoBot.getGeneratePantun()
   sysoBot.deleteKomposisi()
+
+  app.use(cors())
+  app.use(express.json())
+  app.use((req, res, next) => {
+    res.setHeader("Cache-Control", "no-store")
+    next()
+  })
+  app.get("/health", (req, res) => {
+    res.sendStatus(200)
+  })
+  app.get("/oasing", async (req, res) => {
+    try {
+      const result = await sysoBot.getDoneFollowup()
+      return res.status(200).json(result)
+    } catch (error) {
+      return res.status(500).json({ error: error.message })
+    }
+  })
+  app.post("/oasing", async (req, res) => {
+    try {
+      const { data } = req.body
+      if(data === true || data === "true") {
+        const result = await sysoBot.postFollowup(true)
+        return res.status(200).json(result)
+      } else if (data === false || data === "false") {
+        const result = await sysoBot.postFollowup(false)
+        return res.status(200).json(result)
+      } else {
+        console.log(`${data} bukan boolean (?)`)
+        return res.status(400).json({ success: false, message: "Data harus true / false" })
+      }
+    } catch (error) {
+      return res.status(500).json({ error: error.message })
+    }
+  })
+  app.listen(port, ()=>{
+    console.log(`listening at ${port}`)
+  })
 }
 
-app.use(cors())
-app.use(express.json())
-
-app.use((req, res, next) => {
-  res.setHeader("Cache-Control", "no-store");
-  next();
-});
-
-app.get("/health", (req, res) => {
-  res.sendStatus(200)
-})
-
-app.get("/oasing", async (req, res) => {
-  try {
-    const result = await sysoBot.getDoneFollowup();
-    return res.status(200).json(result);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-})
-
-app.post("/oasing", async (req, res) => {
-  try {
-    const { data } = req.body
-    if(data === true || data === "true") {
-      const result = await sysoBot.postFollowup(true)
-      return res.status(200).json(result)
-    } else if (data === false || data === "false") {
-      const result = await sysoBot.postFollowup(false)
-      return res.status(200).json(result)
-    } else {
-      console.log(`${data} bukan boolean (?)`)
-      return res.status(400).json({ success: false, message: "Data harus true / false" })
-    }
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-})
-
-app.listen(port, ()=>{
-  console.log(`cli-nodejs-api listening at ${port}`)
-})
-
-// main()
+main()
