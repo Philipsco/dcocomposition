@@ -17,7 +17,7 @@ const main = () => {
   sysoBot.getGreeting()
   sysoBot.getQuotes()
   sysoBot.getHelp()
-  sysoBot.getGenerate()
+  //sysoBot.getGenerate()
   sysoBot.insertDatabase()
   sysoBot.deleteDatabase()
   sysoBot.updateDatabase()
