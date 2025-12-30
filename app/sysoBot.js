@@ -442,7 +442,7 @@ class SysoBot extends TelegramBot {
 		let mbcasyso =[];let mbcadart = [];let mbcasl = [];let mbcanoc = [];let mbcaizin =[];let mbcasakit =[];let mbcacuti =[]; let mbcalpt =[]; let mbcatraining = [];
     let wsasyso =[];let wsadart = [];let wsasl = [];let wsanoc = [];let wsaizin =[];let wsasakit =[];let wsacuti =[]; let wsafm = []; let wsalpt =[]; let wsatraining = [];
     let gassyso =[];let gasdart = [];let gassl = [];let gasnoc = [];let gascuti =[];let gasizin =[];let gassakit =[]; let gaslpt =[]; let gastraining = [];
-    let gacfoc =[];let gacsl = [];let gacsyso = [];let gacdart = [];let gacnoc = [];let gacizin =[];let gacsakit =[];let gaccuti =[]; let gaclpt =[]; let gactraining = [];
+    let gacfoc =[];let gacsl = [];let gacsyso = [];let gacdart = [];let gacnoc = [];let gacizin =[];let gacsakit =[];let gaccuti =[]; let gaclpt =[]; let gactraining = []; let gacdl = [];
 		let sumToday = "Summary : ";
     const resgrup = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND NOT(inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4) OR inisial = ANY($5) OR inisial = ANY($6))", [group,sakit,izin,cuti,lpt,training])
     const resKeterangan = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND (inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4) OR inisial = ANY($5) OR inisial = ANY($6))", [group,sakit,izin,cuti,lpt,training])
@@ -454,6 +454,11 @@ class SysoBot extends TelegramBot {
     const defaultValueSL = (arr) => {
       if (arr.length === 0) {
         arr.push("- (SL)")
+			}
+    }
+		const defaultValueDL = (arr) => {
+      if (arr.length === 0) {
+        arr.push("- (DL)")
 			}
     }
     const sortTL = (arr) => {
@@ -541,6 +546,9 @@ class SysoBot extends TelegramBot {
                 break
 							case 'DART':
 								resgrup.rows[x].leader === true ? gacdart.push(pushData+ ` (TL)`): gacdart.push(pushData)
+								break
+							case 'DL':
+								gacdl.push(pushData+ ` (DL)`)
 								break
 							case 'SL':
 								gacsl.push(pushData+ ` (SL)`)
@@ -642,6 +650,7 @@ class SysoBot extends TelegramBot {
       defaultValueSL(wsasl)
       defaultValueSL(gassl)
       defaultValueSL(gacsl)
+			defaultValueDL(gacdl)
       let mbcadartSorted = sortTL(mbcadart)
       let mbcasysoSorted = sortTL(mbcasyso)
       let gasdartSorted = sortTL(gasdart)
@@ -674,7 +683,7 @@ class SysoBot extends TelegramBot {
 			let data = formatData(mbcasl,mbcasysoSorted,mbcadartSorted,mbcanoc,mbcasakit,mbcacuti,mbcaizin,
 				wsasl,wsasysoSorted,wsadartSorted,wsanoc,wsasakit,wsacuti,wsaizin,
         gassl,gassysoSorted,gasdartSorted,gasnoc,gassakit,gascuti,gasizin,
-        gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacnoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining, sumToday, gacsysoSorted, gacdartSorted)
+        gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacnoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining, sumToday, gacsysoSorted, gacdartSorted, gacdl)
 				return data
 			} catch (error) {
 				this.sendMessage(936687738,`${error} pada saat generate getGroup()`)

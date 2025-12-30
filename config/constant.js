@@ -148,7 +148,7 @@ const hadirText = `
 Apakah member grup masuk semua??
 `
 
-const formatData = (mbcasl,mbcasyso,mbcadart,mbcanoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadart,wsanoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdart,gasnoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacnoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining,sumToday,gacsyso,gacdart)=>{
+const formatData = (mbcasl,mbcasyso,mbcadart,mbcanoc,mbcasakit,mbcacuti,mbcaizin,wsasl,wsasyso,wsadart,wsanoc,wsasakit,wsacuti,wsaizin,gassl,gassyso,gasdart,gasnoc,gassakit,gascuti,gasizin,gacsl,gacfoc,gacsakit,gaccuti,gacizin,wsafm,gacnoc,mbcalpt,mbcatraining,wsalpt,wsatraining,gaslpt,gastraining,gaclpt,gactraining,sumToday,gacsyso,gacdart, gacdl)=>{
   let format = `
 #MBCA
 Hadir : ${mbcasl}, Syso [ ${mbcasyso} ], NOC [ ${mbcanoc} ]
@@ -163,7 +163,7 @@ Hadir : ${gassl}, Syso [ ${gassyso} ], DART [ ${gasdart} ], NOC [ ${gasnoc} ]
 Tidak Hadir : Sakit [ ${gassakit} ], Cuti [ ${gascuti} ], Izin [ ${gasizin} ], LPT [ ${gaslpt} ], Training [ ${gastraining} ]
 __________________________
 #GAC
-Hadir : ${gacsl}, DART [ ${gacdart} ], NOC [ ${gacnoc} ],FOC [ ${gacfoc} ], Syso [ ${gacsyso} ]
+Hadir : ${gacsl}, DART LEADER [ ${gacdl} ] DART [ ${gacdart} ], NOC [ ${gacnoc} ],FOC [ ${gacfoc} ], Syso [ ${gacsyso} ]
 Tidak Hadir : Sakit [ ${gacsakit} ], Cuti [ ${gaccuti} ], Izin [ ${gacizin} ], LPT [ ${gaclpt} ], Training [ ${gactraining} ]
 __________________________
 ${sumToday}
