@@ -441,7 +441,7 @@ class SysoBot extends TelegramBot {
 	async getGrup(group,sakit,izin,cuti,lpt,training){
 		let mbcasyso =[];let mbcadart = [];let mbcasl = [];let mbcanoc = [];let mbcaizin =[];let mbcasakit =[];let mbcacuti =[]; let mbcalpt =[]; let mbcatraining = [];
     let wsasyso =[];let wsadart = [];let wsasl = [];let wsanoc = [];let wsaizin =[];let wsasakit =[];let wsacuti =[]; let wsafm = []; let wsalpt =[]; let wsatraining = [];
-    let gassyso =[];let gasdart = [];let gassl = [];let gasnoc = [];let gascuti =[];let gasizin =[];let gassakit =[]; let gaslpt =[]; let gastraining = [];
+    let gassyso =[];let gasdart = [];let gassl = [];let gasnoc = [];let gascuti =[];let gasizin =[];let gassakit =[]; let gaslpt =[]; let gastraining = []; let gasdl = [];
     let gacfoc =[];let gacsl = [];let gacsyso = [];let gacdart = [];let gacnoc = [];let gacizin =[];let gacsakit =[];let gaccuti =[]; let gaclpt =[]; let gactraining = []; let gacdl = [];
 		let sumToday = "Summary : ";
     const resgrup = await db.query("SELECT inisial, role, leader, sites FROM dataKaryawan WHERE grup = $1 AND NOT(inisial = ANY($2) OR inisial = ANY($3) OR inisial = ANY($4) OR inisial = ANY($5) OR inisial = ANY($6))", [group,sakit,izin,cuti,lpt,training])
@@ -529,6 +529,9 @@ class SysoBot extends TelegramBot {
 							case 'DART':
                 resgrup.rows[x].leader === true ? gasdart.push(pushData+ ` (TL)`): gasdart.push(pushData)
                 break
+							case 'DL':
+								gasdl.push(pushData+ ` (DL)`)
+								break
 							case 'SL':
 								gassl.push(pushData+ ` (SL)`)
 								break
@@ -651,6 +654,7 @@ class SysoBot extends TelegramBot {
       defaultValueSL(gassl)
       defaultValueSL(gacsl)
 			defaultValueDL(gacdl)
+			defaultValueDL(gasdl)
       let mbcadartSorted = sortTL(mbcadart)
       let mbcasysoSorted = sortTL(mbcasyso)
       let gasdartSorted = sortTL(gasdart)
