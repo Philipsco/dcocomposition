@@ -60,11 +60,7 @@ const main = () => {
       return res.status(500).json({ error: error.message })
     }
   })
-  app.listen(port, ()=>{
-    console.log(`listening at ${port}`)
-  })
-
-   app.post("/webhook", async (req, res) => {
+  app.post("/webhook", async (req, res) => {
     const powerAutomateUrl = "https://default59daf1404aee4b7780f44ea8bec86c.2e.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ed6d4b3ae5304135868d88512af89f56/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HjMKmUsXeoI0tzUisGN_tSCJMsR2E24R_wI80AVSSD8";
     try {
       const response = await fetch(powerAutomateUrl, {
@@ -82,7 +78,11 @@ const main = () => {
     } catch (error) {
       return res.status(500).json({ error: error.message })
     }
-   })
+  })
+
+  app.listen(port, ()=>{
+    console.log(`listening at ${port}`)
+  })
 }
 
 main()
